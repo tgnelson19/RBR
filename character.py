@@ -1,5 +1,6 @@
 import pygame
-from math import floor, ceil
+from math import floor, ceil, atan, pi
+from bullet import Bullet
 
 class Character:
 
@@ -12,9 +13,61 @@ class Character:
 
         self.noNoZone = None
 
+        self.liveRounds = []
+        self.attackCooldownStat = 20
+        self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
+        self.bulletSpeed = 5
+        self.bulletRange = 30
+        self.bulletSize = 10
+        self.bulletColor = pygame.Color(125,125,125)
+
     def newNoNoZone(self, noNoZone, tileSize):
         self.noNoZone = noNoZone
         self.tileSize = tileSize
+
+    def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
+
+        if (self.attackCooldownTimer == 0 and mouseDown):
+
+            self.attackCooldownTimer = self.attackCooldownStat
+            originX = self.positionX + (self.playerSize / 2)
+            originY = self.positionY + (self.playerSize / 2)
+
+            deltaX = mouseX - originX
+            deltaY = mouseY - originY
+
+            direction = 0
+
+            if (deltaX == 0):
+                if(deltaY > 0):
+                    direction = 0
+                else:
+                    direction = -pi
+            else:
+                
+                if(deltaX > 0):
+
+                    direction = -atan(deltaY/deltaX)
+                else:
+                    deltaX = abs(mouseX - originX)
+
+                    direction = atan(deltaY/deltaX) + pi
+
+            self.liveRounds.append(Bullet(originX, originY, self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor))
+
+        elif(self.attackCooldownTimer > 0):
+            self.attackCooldownTimer -= 1
+
+        for bullet in self.liveRounds:
+            bullet.updateAndDrawBullet(screen)
+
+            currX = bullet.posX / self.tileSize #Current Position
+            currY = bullet.posY / self.tileSize #Current Position
+
+            if(self.noNoZone[floor(currX)][floor(currY)] == "wall" or self.noNoZone[ceil(currX)][floor(currY)] == "wall" or self.noNoZone[floor(currX)][ceil(currY)] == "wall" or self.noNoZone[ceil(currX)][ceil(currY)] == "wall"):
+                del bullet
+            elif (bullet.remFlag == True):
+                del bullet
 
 
     def moveAndDrawPlayer(self, screen, keysDown):

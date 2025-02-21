@@ -61,6 +61,7 @@ class Variables:
         self.bugCheckerOnMousePos() # Helps determine mouse position
 
         self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
+        self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
 
 
