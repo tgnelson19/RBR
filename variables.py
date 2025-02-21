@@ -1,5 +1,6 @@
 import pygame
 from os import environ
+from character import Character
 
 class Variables:
 
@@ -33,12 +34,7 @@ class Variables:
 
         self.keysDown = [False, False, False, False]
 
-        self.positionX = self.sW / 2
-        self.positionY = self.sH / 2
-
-        self.playerSpeed = 7
-        self.playerSize = 20
-        self.playerColor = pygame.Color(0,0,255)
+        self.character = Character(self.sW / 2, self.sH / 2)
 
 
 
@@ -56,7 +52,7 @@ class Variables:
 
         self.bugCheckerOnMousePos() # Helps determine mouse position
 
-        self.movePlayer(self.screen) # Moves player around
+        self.character.movePlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
 
 
 
@@ -68,33 +64,7 @@ class Variables:
 
     ##########################################################################################################
         
-    def movePlayer(self, screen):
-
-        doubleChecker = 0
-        scalar = 1
-
-        for i in self.keysDown:
-            if i:
-                doubleChecker += 1
-
-        if doubleChecker == 2:
-            scalar = 0.707
-
-        dX, dY = 0,0
-
-        if self.keysDown[0]:
-            dY -= 1 * scalar
-        if self.keysDown[1]:
-            dX -= 1 * scalar
-        if self.keysDown[2]:
-            dY += 1 * scalar
-        if self.keysDown[3]:
-            dX += 1 * scalar
-
-        self.positionX += dX * self.playerSpeed
-        self.positionY += dY * self.playerSpeed
-
-        pygame.draw.rect(screen, self.playerColor, pygame.Rect(self.positionX, self.positionY, self.playerSize, self.playerSize))
+   
 
 
     def bugCheckerOnMousePos(self):
