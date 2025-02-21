@@ -1,4 +1,5 @@
 import pygame
+from math import floor, ceil
 
 class Character:
 
@@ -6,8 +7,14 @@ class Character:
         self.positionX = defX
         self.positionY = defY
         self.playerSpeed = 3
-        self.playerSize = 20
+        self.playerSize = 25
         self.playerColor = pygame.Color(0,0,255)
+
+        self.noNoZone = None
+
+    def newNoNoZone(self, noNoZone, tileSize):
+        self.noNoZone = noNoZone
+        self.tileSize = tileSize
 
 
     def moveAndDrawPlayer(self, screen, keysDown):
@@ -33,7 +40,36 @@ class Character:
         if keysDown[3]:
             dX += 1 * scalar
 
-        self.positionX += dX * self.playerSpeed
-        self.positionY += dY * self.playerSpeed
+        currX = self.positionX / self.tileSize #Current Position
+        currY = self.positionY / self.tileSize #Current Position
+
+        potNewX = (self.positionX + (dX * self.playerSpeed)) / self.tileSize #Exact float X coordinate desired
+        potNewY = (self.positionY + (dY * self.playerSpeed)) / self.tileSize #Exact float Y coordinate desired
+
+        noMoveX = False
+        noMoveY = False
+
+        if (dX < 0):
+            if (self.noNoZone[floor(potNewX)][floor(currY)] == "wall"):
+                self.positionX = ceil(potNewX) * self.tileSize
+                noMoveX = True
+        if (dX > 0):
+            if (self.noNoZone[ceil(potNewX)][floor(currY)] == "wall"):
+                self.positionX = floor(potNewX) * self.tileSize
+                noMoveX = True
+        if (dY < 0):
+            if (self.noNoZone[floor(currX)][floor(potNewY)] == "wall"):
+                self.positionY = ceil(potNewY) * self.tileSize
+                noMoveY = True
+        if (dY > 0):
+            if (self.noNoZone[floor(currX)][ceil(potNewY)] == "wall"):
+                self.positionY = floor(potNewY) * self.tileSize
+                noMoveY = True
+
+        if (not noMoveX):
+            self.positionX += dX * self.playerSpeed
+
+        if (not noMoveY):
+            self.positionY += dY * self.playerSpeed
 
         pygame.draw.rect(screen, self.playerColor, pygame.Rect(self.positionX, self.positionY, self.playerSize, self.playerSize))

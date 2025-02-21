@@ -40,6 +40,8 @@ class Variables:
         self.background = Background(self.sW, self.sH)
         self.background.makeDefaultRoom()
 
+        self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
+
 
 
     ##########################################################################################################
