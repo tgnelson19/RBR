@@ -10,7 +10,7 @@ class Character:
         self.playerColor = pygame.Color(0,0,255)
 
 
-    def movePlayer(self, screen, keysDown):
+    def moveAndDrawPlayer(self, screen, keysDown):
 
         doubleChecker = 0
         scalar = 1

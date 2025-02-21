@@ -1,6 +1,7 @@
 import pygame
 from os import environ
 from character import Character
+from background import Background
 
 class Variables:
 
@@ -36,6 +37,9 @@ class Variables:
 
         self.character = Character(self.sW / 2, self.sH / 2)
 
+        self.background = Background(self.sW, self.sH)
+        self.background.makeDefaultRoom()
+
 
 
     ##########################################################################################################
@@ -50,9 +54,11 @@ class Variables:
 
     # Put functions to do things here (Main chunks of code)
 
+        self.background.displayCurrentRoom(self.screen)
+
         self.bugCheckerOnMousePos() # Helps determine mouse position
 
-        self.character.movePlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
+        self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
 
 
 
