@@ -17,7 +17,7 @@ class Character:
         self.attackCooldownStat = 20
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
         self.bulletSpeed = 5
-        self.bulletRange = 30
+        self.bulletRange = 200
         self.bulletSize = 10
         self.bulletColor = pygame.Color(125,125,125)
 
@@ -61,13 +61,13 @@ class Character:
         for bullet in self.liveRounds:
             bullet.updateAndDrawBullet(screen)
 
-            currX = bullet.posX / self.tileSize #Current Position
-            currY = bullet.posY / self.tileSize #Current Position
+            currX = bullet.posX / self.tileSize #Current Position in tiles
+            currY = bullet.posY / self.tileSize #Current Position in tiles
 
             if(self.noNoZone[floor(currX)][floor(currY)] == "wall" or self.noNoZone[ceil(currX)][floor(currY)] == "wall" or self.noNoZone[floor(currX)][ceil(currY)] == "wall" or self.noNoZone[ceil(currX)][ceil(currY)] == "wall"):
-                del bullet
+                self.liveRounds.remove(bullet)
             elif (bullet.remFlag == True):
-                del bullet
+                self.liveRounds.remove(bullet)
 
 
     def moveAndDrawPlayer(self, screen, keysDown):
