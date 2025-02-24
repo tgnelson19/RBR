@@ -29,6 +29,19 @@ class Background:
                     else:
                         self.currentLayout[i][j] = "default"
 
+    def openDoors(self):
+        for i in range(self.numHori):
+            for j in range(self.numVerti):
+                if(i == 0 and j > 7 and j < 13):
+                    self.currentLayout[i][j] = "default"
+                if(i == self.numHori - 1 and j > 7 and j < 13):
+                    self.currentLayout[i][j] = "default"
+                if(j == 0 and i > 13 and i < 19):
+                    self.currentLayout[i][j] = "default"
+                if(j == self.numVerti -1  and i > 13 and i < 19):
+                    self.currentLayout[i][j] = "default"
+        
+
     
     def displayCurrentRoom(self, screen):
 

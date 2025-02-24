@@ -29,9 +29,9 @@ class Enemy:
 
         if (deltaX == 0):
             if(deltaY > 0):
-                    self.direction = -pi/2
-            else:
                 self.direction = pi/2
+            else:
+                self.direction = -pi/2
         else:
             
             if(deltaX > 0):

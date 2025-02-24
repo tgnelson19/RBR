@@ -45,6 +45,9 @@ class Variables:
 
         self.enemyWrangler = EnemyWrangler()
 
+        self.numKilledNeeded = 25
+        self.oneInChance = 20
+
 
 
     ##########################################################################################################
@@ -61,15 +64,47 @@ class Variables:
 
         self.background.displayCurrentRoom(self.screen)
 
-        self.bugCheckerOnMousePos() # Helps determine mouse position
+        #self.bugCheckerOnMousePos() # Helps determine mouse position
 
-        self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
+        self.displayNumOfEnemiesKilled()
+
+        playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
         self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
-        self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, 25)
         self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY)
         self.enemyWrangler.hurtEnemies(self.character.liveRounds)
 
+        if (self.enemyWrangler.numOfEnemiesKilled > self.numKilledNeeded):
+            self.background.openDoors()
+        else:
+            self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, 25)
+
+        if (playerDecision != "no"):
+
+            self.background.makeDefaultRoom()
+            self.enemyWrangler.numOfEnemiesKilled = 0
+            self.numKilledNeeded += 5
+            self.enemyWrangler.enemyList.clear()
+
+            if(self.oneInChance > 10):
+                self.oneInChance -= 5
+            elif(self.oneInChance > 5):
+                self.oneInChance -= 2
+            elif (self.oneInChance > 1):
+                self.oneInChance -= 1
+        
+        if (playerDecision == "bottom"):
+            self.character.positionX = (self.sW / 2) - (self.character.playerSize / 2)
+            self.character.positionY = self.background.tileSize + 5
+        elif (playerDecision == "left"):
+            self.character.positionX = self.background.tileSize + 5
+            self.character.positionY = (self.sH / 2) - (self.character.playerSize / 2)
+        elif (playerDecision == "right"):
+            self.character.positionX = self.sW - (self.background.tileSize + 5)
+            self.character.positionY = (self.sH / 2) - (self.character.playerSize / 2)
+        elif (playerDecision == "top"):
+            self.character.positionX = (self.sW / 2) - (self.character.playerSize / 2)
+            self.character.positionY = self.sH - (self.background.tileSize + 5)
 
 
 

@@ -75,6 +75,8 @@ class Character:
         doubleChecker = 0
         scalar = 1
 
+        playerDecision = "no"
+
         for i in keysDown:
             if i:
                 doubleChecker += 1
@@ -99,30 +101,41 @@ class Character:
         potNewX = (self.positionX + (dX * self.playerSpeed)) / self.tileSize #Exact float X coordinate desired
         potNewY = (self.positionY + (dY * self.playerSpeed)) / self.tileSize #Exact float Y coordinate desired
 
-        noMoveX = False
-        noMoveY = False
+        if (potNewX < 0):
+            playerDecision = "right"
+        elif (potNewY < 0):
+            playerDecision = "top"
+        elif (potNewX > 31):
+            playerDecision = "left"
+        elif (potNewY > 19):
+            playerDecision = "bottom"
+        else:
+            noMoveX = False
+            noMoveY = False
 
-        if (dX < 0):
-            if (self.noNoZone[floor(potNewX)][floor(currY)] == "wall"):
-                self.positionX = ceil(potNewX) * self.tileSize
-                noMoveX = True
-        if (dX > 0):
-            if (self.noNoZone[ceil(potNewX)][floor(currY)] == "wall"):
-                self.positionX = floor(potNewX) * self.tileSize
-                noMoveX = True
-        if (dY < 0):
-            if (self.noNoZone[floor(currX)][floor(potNewY)] == "wall"):
-                self.positionY = ceil(potNewY) * self.tileSize
-                noMoveY = True
-        if (dY > 0):
-            if (self.noNoZone[floor(currX)][ceil(potNewY)] == "wall"):
-                self.positionY = floor(potNewY) * self.tileSize
-                noMoveY = True
+            if (dX < 0):
+                if (self.noNoZone[floor(potNewX)][floor(currY)] == "wall"):
+                    self.positionX = ceil(potNewX) * self.tileSize
+                    noMoveX = True
+            if (dX > 0):
+                if (self.noNoZone[ceil(potNewX)][floor(currY)] == "wall"):
+                    self.positionX = floor(potNewX) * self.tileSize
+                    noMoveX = True
+            if (dY < 0):
+                if (self.noNoZone[floor(currX)][floor(potNewY)] == "wall"):
+                    self.positionY = ceil(potNewY) * self.tileSize
+                    noMoveY = True
+            if (dY > 0):
+                if (self.noNoZone[floor(currX)][ceil(potNewY)] == "wall"):
+                    self.positionY = floor(potNewY) * self.tileSize
+                    noMoveY = True
 
-        if (not noMoveX):
-            self.positionX += dX * self.playerSpeed
+            if (not noMoveX):
+                self.positionX += dX * self.playerSpeed
 
-        if (not noMoveY):
-            self.positionY += dY * self.playerSpeed
+            if (not noMoveY):
+                self.positionY += dY * self.playerSpeed
 
         pygame.draw.rect(screen, self.playerColor, pygame.Rect(self.positionX, self.positionY, self.playerSize, self.playerSize))
+
+        return playerDecision
