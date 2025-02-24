@@ -16,19 +16,18 @@ class EnemyWrangler:
         if(chance == 1):
             if (type == "crawler"):
                 spawnSeed = randint(1,4)
-                if(spawnSeed == 1):
-                    x = w/2
-                    y = 0
-                if(spawnSeed == 2):
-                    x = w
-                    y = h/2
-                if(spawnSeed == 3):
-                    x = w/2
-                    y = h
-                if(spawnSeed == 4):
+                if (spawnSeed == 1):
+                    x = randint(1,w - 1)
+                    y = 1
+                elif (spawnSeed == 2):
+                    x = randint(1,w - 1)
+                    y = h - 1
+                elif (spawnSeed == 3):
                     x = 0
-                    y = h/2
-                
+                    y = randint(1,h - 1)
+                elif (spawnSeed == 4):
+                    x = w - 1
+                    y = randint(1,h - 1)
                 self.enemyList.append(Enemy(x, y, 1, 25, pygame.Color(255,0,0), 1))
 
     def updateEnemies(self, screen, playerX, playerY):
