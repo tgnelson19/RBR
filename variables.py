@@ -2,6 +2,7 @@ import pygame
 from os import environ
 from character import Character
 from background import Background
+from enemyWrangler import EnemyWrangler
 
 class Variables:
 
@@ -42,6 +43,8 @@ class Variables:
 
         self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
 
+        self.enemyWrangler = EnemyWrangler()
+
 
 
     ##########################################################################################################
@@ -63,6 +66,8 @@ class Variables:
         self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
         self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
+        self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, 25)
+        self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY, self.character.playerSize)
 
 
 

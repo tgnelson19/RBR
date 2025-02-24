@@ -7,14 +7,14 @@ class Character:
     def __init__(self, defX, defY):
         self.positionX = defX
         self.positionY = defY
-        self.playerSpeed = 3
+        self.playerSpeed = 3.5
         self.playerSize = 25
         self.playerColor = pygame.Color(0,0,255)
 
         self.noNoZone = None
 
         self.liveRounds = []
-        self.attackCooldownStat = 20
+        self.attackCooldownStat = 1
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
         self.bulletSpeed = 5
         self.bulletRange = 200
