@@ -14,7 +14,7 @@ class Character:
         self.noNoZone = None
 
         self.liveRounds = []
-        self.attackCooldownStat = 1
+        self.attackCooldownStat = 10
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
         self.bulletSpeed = 5
         self.bulletRange = 200
@@ -64,7 +64,7 @@ class Character:
             currX = bullet.posX / self.tileSize #Current Position in tiles
             currY = bullet.posY / self.tileSize #Current Position in tiles
 
-            if(self.noNoZone[floor(currX)][floor(currY)] == "wall" or self.noNoZone[ceil(currX)][floor(currY)] == "wall" or self.noNoZone[floor(currX)][ceil(currY)] == "wall" or self.noNoZone[ceil(currX)][ceil(currY)] == "wall"):
+            if( self.noNoZone[int(currX)][int(currY)] == "wall"):
                 self.liveRounds.remove(bullet)
             elif (bullet.remFlag == True):
                 self.liveRounds.remove(bullet)

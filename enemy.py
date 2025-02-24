@@ -13,12 +13,12 @@ class Enemy:
         self.direction = 0
 
 
-    def updateAndDrawEnemy(self, screen, playerX, playerY, playerSize):
+    def updateAndDrawEnemy(self, screen, playerX, playerY):
         
         #Logic for a basic crawler enemy (All anyone wants to fight anyway these days, brainrot...)
         
-        originX = playerX + (playerSize / 2)
-        originY = playerY + (playerSize / 2)
+        originX = playerX
+        originY = playerY
 
         #This is direct center x, y of player
 

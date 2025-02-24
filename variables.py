@@ -67,7 +67,8 @@ class Variables:
         self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
         self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, 25)
-        self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY, self.character.playerSize)
+        self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY)
+        self.enemyWrangler.hurtEnemies(self.character.liveRounds)
 
 
 
@@ -79,7 +80,10 @@ class Variables:
     ##########################################################################################################
         
    
-
+    def displayNumOfEnemiesKilled(self):
+        textRender = self.font.render("Enemies Killed: " + str(self.enemyWrangler.numOfEnemiesKilled), True, (0,0,0))
+        textRect = textRender.get_rect(topleft = (35,35))
+        self.screen.blit(textRender, textRect)
 
     def bugCheckerOnMousePos(self):
         textRender = self.font.render(str(self.mouseX) + ", " + str(self.mouseY), True, (255,255,255))

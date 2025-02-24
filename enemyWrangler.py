@@ -1,10 +1,13 @@
 import pygame
 from enemy import Enemy
 from random import randint
+from bullet import Bullet
 
 class EnemyWrangler:    
     def __init__(self):
         self.enemyList = []
+
+        self.numOfEnemiesKilled = 0
 
     def makeANewEnemy(self, type, w, h, oneIn):
 
@@ -28,7 +31,18 @@ class EnemyWrangler:
                 
                 self.enemyList.append(Enemy(x, y, 1, 25, pygame.Color(255,0,0), 1))
 
-    def updateEnemies(self, screen, playerX, playerY, playerSize):
+    def updateEnemies(self, screen, playerX, playerY):
         for enemy in self.enemyList:
-            enemy.updateAndDrawEnemy(screen, playerX, playerY, playerSize)
+            enemy.updateAndDrawEnemy(screen, playerX, playerY)
 
+    def hurtEnemies(self, liveRounds):
+        for bullet in liveRounds:
+            originX = bullet.posX + bullet.size/2
+            originY = bullet.posY + bullet.size/2
+            for eman in self.enemyList:
+
+                if(originX > eman.posX and originX < eman.posX + eman.size):
+                    if(originY > eman.posY and originY < eman.posY + eman.size):
+                        bullet.remFlag = True
+                        self.enemyList.remove(eman)
+                        self.numOfEnemiesKilled += 1
