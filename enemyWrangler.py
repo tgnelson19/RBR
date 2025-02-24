@@ -41,8 +41,8 @@ class EnemyWrangler:
             originY = bullet.posY + bullet.size/2
             for eman in self.enemyList:
 
-                if(originX > eman.posX and originX < eman.posX + eman.size):
-                    if(originY > eman.posY and originY < eman.posY + eman.size):
+                if(originX + bullet.size/2 > eman.posX and originX - bullet.size/2< eman.posX + eman.size):
+                    if(originY + bullet.size/2> eman.posY and originY - bullet.size/2< eman.posY + eman.size):
                         bullet.remFlag = True
                         self.enemyList.remove(eman)
                         self.numOfEnemiesKilled += 1

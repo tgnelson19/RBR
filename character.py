@@ -14,11 +14,11 @@ class Character:
         self.noNoZone = None
 
         self.liveRounds = []
-        self.attackCooldownStat = 10
+        self.attackCooldownStat = 3
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
-        self.bulletSpeed = 5
-        self.bulletRange = 200
-        self.bulletSize = 10
+        self.bulletSpeed = 10
+        self.bulletRange = 500
+        self.bulletSize = 35
         self.bulletColor = pygame.Color(125,125,125)
 
     def newNoNoZone(self, noNoZone, tileSize):
@@ -53,7 +53,7 @@ class Character:
 
                     direction = atan(deltaY/deltaX) + pi
 
-            self.liveRounds.append(Bullet(originX, originY, self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor))
+            self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor))
 
         elif(self.attackCooldownTimer > 0):
             self.attackCooldownTimer -= 1
