@@ -9,6 +9,8 @@ class EnemyWrangler:
 
         self.numOfEnemiesKilled = 0
 
+        self.dead = False
+
     def makeANewEnemy(self, type, w, h, oneIn):
 
         chance = randint(1, oneIn)
@@ -45,3 +47,9 @@ class EnemyWrangler:
                         bullet.remFlag = True
                         self.enemyList.remove(eman)
                         self.numOfEnemiesKilled += 1
+
+    def hurtPlayer(self, pX, pY, pSize):
+        for eman in self.enemyList:
+            if(pX + pSize > eman.posX and pX < eman.posX + eman.size):
+                if(pY + pSize > eman.posY and pY < eman.posY + eman.size):
+                    self.dead = True

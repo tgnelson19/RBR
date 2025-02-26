@@ -13,12 +13,14 @@ class Character:
 
         self.noNoZone = None
 
-        self.liveRounds = []
-        self.attackCooldownStat = 3
+        self.liveRounds = [] #Storage of every single round on the screen
+        self.projectileCount = 1 #IN PROGRESS, currently not used but will be amount of projectiles (possibly)
+        self.azimuthalProjectileAngle = pi/4
+        self.attackCooldownStat = 20
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
-        self.bulletSpeed = 10
-        self.bulletRange = 500
-        self.bulletSize = 35
+        self.bulletSpeed = 5
+        self.bulletRange = 200
+        self.bulletSize = 10
         self.bulletColor = pygame.Color(125,125,125)
 
     def newNoNoZone(self, noNoZone, tileSize):
@@ -30,30 +32,39 @@ class Character:
         if (self.attackCooldownTimer == 0 and mouseDown):
 
             self.attackCooldownTimer = self.attackCooldownStat
-            originX = self.positionX + (self.playerSize / 2)
-            originY = self.positionY + (self.playerSize / 2)
 
-            deltaX = mouseX - originX
-            deltaY = mouseY - originY
-
-            direction = 0
-
-            if (deltaX == 0):
-                if(deltaY > 0):
-                    direction = 0
-                else:
-                    direction = -pi
-            else:
+            for bNum in range(0,self.projectileCount):
                 
-                if(deltaX > 0):
+                originX = self.positionX + (self.playerSize / 2)
+                originY = self.positionY + (self.playerSize / 2)
 
-                    direction = -atan(deltaY/deltaX)
+                deltaX = mouseX - originX
+                deltaY = mouseY - originY
+
+                direction = 0
+
+                if (deltaX == 0):
+                    if(deltaY > 0):
+                        direction = 0
+                    else:
+                        direction = -pi
                 else:
-                    deltaX = abs(mouseX - originX)
+                    
+                    if(deltaX > 0):
 
-                    direction = atan(deltaY/deltaX) + pi
+                        direction = -atan(deltaY/deltaX)
+                    else:
+                        deltaX = abs(mouseX - originX)
 
-            self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor))
+                        direction = atan(deltaY/deltaX) + pi
+
+                if(self.projectileCount != 1):
+
+                    dirDelta = -(self.azimuthalProjectileAngle / 2)
+
+                    direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (self.projectileCount-1))
+
+                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor))
 
         elif(self.attackCooldownTimer > 0):
             self.attackCooldownTimer -= 1

@@ -9,6 +9,8 @@ class Variables:
 
     def __init__(self):
 
+        self.state = "titleScreen"
+
         environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()  # Initializes a window
         pygame.display.set_caption("Little Dude")
@@ -45,10 +47,49 @@ class Variables:
 
         self.enemyWrangler = EnemyWrangler()
 
-        self.numKilledNeeded = 25
-        self.oneInChance = 20
+        self.baseNumKilledNeeded = 25
+        self.baseOneInChance = 45
+        self.numKilledNeeded = self.baseNumKilledNeeded
+        self.oneInChance = self.baseOneInChance
+
+        self.enemiesEnabled = False
+
+        self.stage = 1
 
 
+
+    def doTheTitleScreen(self):
+        self.clock.tick(120)  # Keeps program to only 120 frames per second
+        self.mouseX, self.mouseY = pygame.mouse.get_pos() # Saves current mouse position
+
+        self.enemyWrangler.enemyList.clear()
+        self.enemyWrangler.numOfEnemiesKilled = 0
+        self.character.positionX = self.sW / 2
+        self.character.positionY = self.sH / 2
+        self.background.makeDefaultRoom()
+        self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
+        self.numKilledNeeded = self.baseNumKilledNeeded
+        self.oneInChance = self.baseOneInChance
+        self.stage = 1
+        self.enemyWrangler.dead = False
+        self.keysDown = [False, False, False, False]
+
+        textRender = self.font.render("RbR : Press Space To Play", True, (0,0,0))
+        textRect = textRender.get_rect(center = (self.sW/2, self.sH/2))
+        self.screen.blit(textRender, textRect)
+
+        for event in pygame.event.get():  # Main event handler
+            if event.type == pygame.QUIT:
+                self.done = True  # Close the entire program
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.done = True
+                if event.key == pygame.K_SPACE:
+                    self.state = "gameRun"
+
+        self.bugCheckerOnMousePos()
+        self.finishPaint(pygame.Color(245,245,220))
 
     ##########################################################################################################
 
@@ -74,10 +115,18 @@ class Variables:
         self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY)
         self.enemyWrangler.hurtEnemies(self.character.liveRounds)
 
+        self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
+
+        if(self.enemyWrangler.dead == True):
+            self.state = "titleScreen"
+
+
+
         if (self.enemyWrangler.numOfEnemiesKilled > self.numKilledNeeded):
             self.background.openDoors()
-        else:
-            self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, 25)
+        elif(self.enemiesEnabled):
+            self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, self.oneInChance)
+
 
         if (playerDecision != "no"):
 
@@ -85,6 +134,7 @@ class Variables:
             self.enemyWrangler.numOfEnemiesKilled = 0
             self.numKilledNeeded += 5
             self.enemyWrangler.enemyList.clear()
+            self.stage += 1
 
             if(self.oneInChance > 10):
                 self.oneInChance -= 5
@@ -110,24 +160,24 @@ class Variables:
 
     ##########################################################################################################
 
-        self.finishPaint()  # Paints whatever is desired from last frame on the screen (Don't Change)
+        self.finishPaint(pygame.Color(0,0,0))  # Paints whatever is desired from last frame on the screen (Don't Change)
 
     ##########################################################################################################
         
    
     def displayNumOfEnemiesKilled(self):
-        textRender = self.font.render("Enemies Killed: " + str(self.enemyWrangler.numOfEnemiesKilled), True, (0,0,0))
+        textRender = self.font.render("Stage: " + str(self.stage) + " | Enemies Killed: " + str(self.enemyWrangler.numOfEnemiesKilled), True, (0,0,0))
         textRect = textRender.get_rect(topleft = (35,35))
         self.screen.blit(textRender, textRect)
 
     def bugCheckerOnMousePos(self):
-        textRender = self.font.render(str(self.mouseX) + ", " + str(self.mouseY), True, (255,255,255))
+        textRender = self.font.render(str(self.mouseX) + ", " + str(self.mouseY), True, (0,0,0))
         textRect = textRender.get_rect(topleft = (10,10))
         self.screen.blit(textRender, textRect)
 
-    def finishPaint(self):
+    def finishPaint(self, color):
         pygame.display.flip()  # Displays currently drawn frame
-        self.screen.fill(pygame.Color(0, 0, 0))  # Clears screen with a black color
+        self.screen.fill(color)  # Clears screen with a black color
 
     def eventHandler(self):
         self.clock.tick(120)  # Keeps program to only 120 frames per second
@@ -151,6 +201,8 @@ class Variables:
                     if event.key == pygame.K_s or event.key == pygame.K_DOWN: self.keysDown[2] = False
                     if event.key == pygame.K_a or event.key == pygame.K_LEFT: self.keysDown[1] = False
                     if event.key == pygame.K_d or event.key == pygame.K_RIGHT: self.keysDown[3] = False
+                    if event.key == pygame.K_BACKSPACE and self.enemiesEnabled == True: self.enemiesEnabled = False
+                    elif event.key == pygame.K_BACKSPACE and self.enemiesEnabled == False: self.enemiesEnabled = True
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.mouseDown = True
