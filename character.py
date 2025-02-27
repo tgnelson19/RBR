@@ -22,6 +22,8 @@ class Character:
         self.bulletRange = 200
         self.bulletSize = 10
         self.bulletColor = pygame.Color(125,125,125)
+        self.aura = 50
+        self.auraSpeed = 4
 
     def newNoNoZone(self, noNoZone, tileSize):
         self.noNoZone = noNoZone
@@ -146,6 +148,9 @@ class Character:
 
             if (not noMoveY):
                 self.positionY += dY * self.playerSpeed
+
+        #Shows Aura
+        #pygame.draw.rect(screen, pygame.Color(0,100,0), pygame.Rect(self.positionX - self.aura, self.positionY - self.aura, self.playerSize + 2*self.aura, self.playerSize +2*self.aura))
 
         pygame.draw.rect(screen, self.playerColor, pygame.Rect(self.positionX, self.positionY, self.playerSize, self.playerSize))
 

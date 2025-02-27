@@ -40,19 +40,22 @@ class Variables:
 
         self.character = Character(self.sW / 2, self.sH / 2)
 
+        self.enemyWrangler = EnemyWrangler()
+
         self.background = Background(self.sW, self.sH)
         self.background.makeDefaultRoom()
 
         self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
+        self.enemyWrangler.newNoNoZone(self.background.currentLayout, self.background.tileSize)
 
-        self.enemyWrangler = EnemyWrangler()
+        
 
         self.baseNumKilledNeeded = 25
         self.baseOneInChance = 45
         self.numKilledNeeded = self.baseNumKilledNeeded
         self.oneInChance = self.baseOneInChance
 
-        self.enemiesEnabled = False
+        self.enemiesEnabled = True
 
         self.stage = 1
 
@@ -63,17 +66,20 @@ class Variables:
         self.mouseX, self.mouseY = pygame.mouse.get_pos() # Saves current mouse position
 
         self.enemyWrangler.enemyList.clear()
+        self.enemyWrangler.experienceList.clear()
         self.enemyWrangler.numOfEnemiesKilled = 0
         self.character.positionX = self.sW / 2
         self.character.positionY = self.sH / 2
         self.background.makeDefaultRoom()
         self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
+        self.enemyWrangler.newNoNoZone(self.background.currentLayout, self.background.tileSize)
         self.numKilledNeeded = self.baseNumKilledNeeded
         self.oneInChance = self.baseOneInChance
         self.stage = 1
         self.enemyWrangler.dead = False
         self.keysDown = [False, False, False, False]
-
+        self.enemyWrangler.expCount = 0
+        
         textRender = self.font.render("RbR : Press Space To Play", True, (0,0,0))
         textRect = textRender.get_rect(center = (self.sW/2, self.sH/2))
         self.screen.blit(textRender, textRect)
@@ -113,13 +119,14 @@ class Variables:
         self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
         self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY)
+        self.enemyWrangler.updateExperience(self.screen, self.background.tileSize, self.character.auraSpeed)
         self.enemyWrangler.hurtEnemies(self.character.liveRounds)
-
+        
+        self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
         self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
 
         if(self.enemyWrangler.dead == True):
             self.state = "titleScreen"
-
 
 
         if (self.enemyWrangler.numOfEnemiesKilled > self.numKilledNeeded):
@@ -131,10 +138,13 @@ class Variables:
         if (playerDecision != "no"):
 
             self.background.makeDefaultRoom()
+            self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
+            self.enemyWrangler.newNoNoZone(self.background.currentLayout, self.background.tileSize)
             self.enemyWrangler.numOfEnemiesKilled = 0
             self.numKilledNeeded += 5
             self.enemyWrangler.enemyList.clear()
             self.stage += 1
+            self.enemyWrangler.experienceList.clear()
 
             if(self.oneInChance > 10):
                 self.oneInChance -= 5
@@ -168,6 +178,9 @@ class Variables:
     def displayNumOfEnemiesKilled(self):
         textRender = self.font.render("Stage: " + str(self.stage) + " | Enemies Killed: " + str(self.enemyWrangler.numOfEnemiesKilled), True, (0,0,0))
         textRect = textRender.get_rect(topleft = (35,35))
+        self.screen.blit(textRender, textRect)
+        textRender = self.font.render("EXP: " + str(self.enemyWrangler.expCount), True, (0,0,0))
+        textRect = textRender.get_rect(topleft = (65,65))
         self.screen.blit(textRender, textRect)
 
     def bugCheckerOnMousePos(self):
