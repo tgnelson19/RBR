@@ -2,12 +2,13 @@ import pygame
 
 class Background:
 
-    def __init__(self, w, h):
+    def __init__(self, w, h, tileSize):
 
         self.sW = w
         self.sH = h
 
-        self.tileSize = 25
+        self.tileSize = tileSize
+        self.doorRad = 3
 
         self.numHori = int(self.sW/self.tileSize)
         self.numVerti = int(self.sH/self.tileSize)
@@ -32,13 +33,13 @@ class Background:
     def openDoors(self):
         for i in range(self.numHori):
             for j in range(self.numVerti):
-                if(i == 0 and j > 7 and j < 13):
+                if(i == 0 and j > (int(self.numVerti / 2) - self.doorRad) and j < (int(self.numVerti / 2) + self.doorRad)):
                     self.currentLayout[i][j] = "default"
-                if(i == self.numHori - 1 and j > 7 and j < 13):
+                if(i == self.numHori - 1 and j > (int(self.numVerti / 2) - self.doorRad) and j < (int(self.numVerti / 2) + self.doorRad)):
                     self.currentLayout[i][j] = "default"
-                if(j == 0 and i > 13 and i < 19):
+                if(j == 0 and i > (int(self.numHori / 2) - self.doorRad) and i < (int(self.numHori / 2) + self.doorRad) ):
                     self.currentLayout[i][j] = "default"
-                if(j == self.numVerti -1  and i > 13 and i < 19):
+                if(j == self.numVerti -1  and i > (int(self.numHori / 2) - self.doorRad)  and i < (int(self.numHori / 2) + self.doorRad) ):
                     self.currentLayout[i][j] = "default"
         
 
@@ -47,5 +48,4 @@ class Background:
 
         for i in range(self.numHori):
             for j in range(self.numVerti):
-
                 pygame.draw.rect(screen, self.tileTypes[self.currentLayout[i][j]], pygame.Rect(i*self.tileSize, j*self.tileSize, self.tileSize, self.tileSize))

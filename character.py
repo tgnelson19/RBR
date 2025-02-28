@@ -5,11 +5,17 @@ from levelBar import LevelBar
 
 class Character:
 
-    def __init__(self, defX, defY):
+    def __init__(self, defX, defY, tileSize, numTX, numTY, sW, sH):
         self.positionX = defX
         self.positionY = defY
         self.playerSpeed = 3.5
-        self.playerSize = 25
+        self.playerSize = tileSize
+        self.tileSize = tileSize
+        self.numTX = numTX
+        self.numTY = numTY
+        self.sW = sW
+        self.sH = sH
+        
         self.playerColor = pygame.Color(0,0,255)
 
         self.noNoZone = None
@@ -31,7 +37,7 @@ class Character:
         self.expNeededForNextLevel = 50
         self.baseExpNeededForNextLevel = 50
         self.levelScaleIncreaseFunction = 1.2
-        self.levelBar = LevelBar()
+        self.levelBar = LevelBar(self.sW, self.sH, self.tileSize)
 
     def newNoNoZone(self, noNoZone, tileSize):
         self.noNoZone = noNoZone
@@ -44,10 +50,10 @@ class Character:
         self.attackCooldownStat = 20
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
         self.bulletSpeed = 5
-        self.bulletRange = 200
-        self.bulletSize = 10
+        self.bulletRange = self.sH/4
+        self.bulletSize = self.tileSize/2
         self.bulletColor = pygame.Color(125,125,125)
-        self.aura = 50
+        self.aura = self.tileSize*2
         self.auraSpeed = 4
 
     def levelUpStatsBasic(self):
@@ -61,8 +67,6 @@ class Character:
         if (self.bulletRange < 1000):
             self.bulletRange  = (self.bulletRange*self.levelMod)
 
-        self.aura = 50
-        self.auraSpeed = 4
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
 
@@ -101,7 +105,7 @@ class Character:
 
                     direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (self.projectileCount-1))
 
-                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor))
+                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, self.sW, self.sH))
 
         elif(self.attackCooldownTimer > 0):
             self.attackCooldownTimer -= 1
@@ -166,9 +170,9 @@ class Character:
             playerDecision = "right"
         elif (potNewY < 0):
             playerDecision = "top"
-        elif (potNewX > 31):
+        elif (potNewX > self.numTX - 1):
             playerDecision = "left"
-        elif (potNewY > 19):
+        elif (potNewY > self.numTY - 1):
             playerDecision = "bottom"
         else:
             noMoveX = False

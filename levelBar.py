@@ -2,11 +2,18 @@ import pygame
 
 class LevelBar:
 
-    def __init__(self):
-        self.posX = 525
-        self.posY = 5
-        self.totalLength = 250
-        self.totalHeight = 15
+    def __init__(self, sW, sH, tileSize):
+        
+        self.sW = sW
+        self.sH = sH
+        self.tileSize = tileSize
+
+        self.totalLength = int(sW / 3.2)
+        self.totalHeight = int(tileSize*(3/5))
+        self.posX = self.sW - self.totalLength - tileSize
+        self.posY = int(self.tileSize/5)
+
+
         self.expColor = (255,0,0)
         self.outerBarColor = pygame.Color(90,90,90)
         self.fakeInnerColor = pygame.Color(20,20,20)

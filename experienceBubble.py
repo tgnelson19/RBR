@@ -4,7 +4,7 @@ import pygame
 
 class ExperienceBubble:    
     def __init__(self, oX, oY, value):
-        self.size = 10
+        self.size = 20
         self.color = pygame.Color(0,200,0)
         self.oX = oX
         self.posX = oX

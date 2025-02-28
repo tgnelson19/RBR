@@ -6,11 +6,13 @@ from experienceBubble import ExperienceBubble
 from math import atan, pi
 
 class EnemyWrangler:    
-    def __init__(self):
+    def __init__(self, tileSize):
         self.enemyList = []
         self.experienceList = []
 
         self.noNoZone = None
+
+        self.tileSize = tileSize
 
         self.numOfEnemiesKilled = 0
 
@@ -46,7 +48,7 @@ class EnemyWrangler:
                 elif (spawnSeed == 4):
                     x = w - 1
                     y = randint(1,h - 1)
-                self.enemyList.append(Enemy(x, y, 1, 25, pygame.Color(255,0,0), 1))
+                self.enemyList.append(Enemy(x, y, 1, self.tileSize, pygame.Color(255,0,0), 1))
 
     def updateEnemies(self, screen, playerX, playerY):
 

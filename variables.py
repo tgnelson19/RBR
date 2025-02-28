@@ -15,10 +15,15 @@ class Variables:
         pygame.init()  # Initializes a window
         pygame.display.set_caption("Little Dude")
 
-        scalar = 2
+        scalar = 1
+
+        self.tileSizeGlobal = 40
 
         self.infoObject = pygame.display.Info() # Gets info about native monitor res
         self.sW, self.sH = (self.infoObject.current_w/scalar, self.infoObject.current_h/scalar)
+
+        self.numTX = self.sW / self.tileSizeGlobal #Total number of X axis tiles
+        self.numTY = self.sH / self.tileSizeGlobal #Total number of Y axis tiles
 
         pygame.display.set_mode((self.infoObject.current_w, self.infoObject.current_h))
 
@@ -30,7 +35,7 @@ class Variables:
         self.clock = pygame.time.Clock()  # Main time keeper
         self.done = False  # Determines if the game is over or not
 
-        self.fontSize = 15
+        self.fontSize = int(self.tileSizeGlobal*(2/3))
         self.font = pygame.font.Font("media/coolveticarg.otf", self.fontSize)
 
         self.mouseDown = False
@@ -38,11 +43,11 @@ class Variables:
 
         self.keysDown = [False, False, False, False]
 
-        self.character = Character(self.sW / 2, self.sH / 2)
+        self.character = Character(self.sW / 2, self.sH / 2, self.tileSizeGlobal, self.numTX, self.numTY, self.sW, self.sH)
 
-        self.enemyWrangler = EnemyWrangler()
+        self.enemyWrangler = EnemyWrangler(self.tileSizeGlobal)
 
-        self.background = Background(self.sW, self.sH)
+        self.background = Background(self.sW, self.sH, self.tileSizeGlobal)
         self.background.makeDefaultRoom()
 
         self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
@@ -182,10 +187,10 @@ class Variables:
    
     def displayNumOfEnemiesKilled(self):
         textRender = self.font.render("Stage: " + str(self.stage), True, (0,0,0))
-        textRect = textRender.get_rect(topleft = (30,3))
+        textRect = textRender.get_rect(topleft = (int(self.tileSizeGlobal*1.5), int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
         textRender = self.font.render("Lv: " + str(self.character.currentLevel), True, (0,0,0))
-        textRect = textRender.get_rect(topleft = (485,3))
+        textRect = textRender.get_rect(topleft = (int(self.sW/1.65), int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
 
     def bugCheckerOnMousePos(self):
