@@ -123,9 +123,14 @@ class Character:
             currX = bullet.posX / self.tileSize #Current Position in tiles
             currY = bullet.posY / self.tileSize #Current Position in tiles
 
-            if( self.noNoZone[int(currX)][int(currY)] == "wall"):
-                self.liveRounds.remove(bullet)
-            elif (bullet.remFlag == True):
+            try:
+
+                if( self.noNoZone[int(currX)][int(currY)] == "wall"):
+                    self.liveRounds.remove(bullet)
+                elif (bullet.remFlag == True):
+                    self.liveRounds.remove(bullet)
+
+            except IndexError:
                 self.liveRounds.remove(bullet)
 
     def shareExp(self, screen, exp):
@@ -174,33 +179,45 @@ class Character:
         potNewY = (self.positionY + (dY * self.playerSpeed)) / self.tileSize #Exact float Y coordinate desired
 
         if (potNewX < 0):
-            playerDecision = "right"
+            playerDecision = "left"
+            noMoveX = True
+            noMoveY = True
         elif (potNewY < 0):
             playerDecision = "top"
+            noMoveX = True
+            noMoveY = True
         elif (potNewX > self.numTX - 1):
-            playerDecision = "left"
+            playerDecision = "right"
+            noMoveX = True
+            noMoveY = True
         elif (potNewY > self.numTY - 1):
             playerDecision = "bottom"
+            noMoveX = True
+            noMoveY = True
         else:
             noMoveX = False
             noMoveY = False
 
-            if (dX < 0):
-                if (self.noNoZone[floor(potNewX)][floor(currY)] == "wall"):
-                    self.positionX = ceil(potNewX) * self.tileSize
-                    noMoveX = True
-            if (dX > 0):
-                if (self.noNoZone[ceil(potNewX)][floor(currY)] == "wall"):
-                    self.positionX = floor(potNewX) * self.tileSize
-                    noMoveX = True
-            if (dY < 0):
-                if (self.noNoZone[floor(currX)][floor(potNewY)] == "wall"):
-                    self.positionY = ceil(potNewY) * self.tileSize
-                    noMoveY = True
-            if (dY > 0):
-                if (self.noNoZone[floor(currX)][ceil(potNewY)] == "wall"):
-                    self.positionY = floor(potNewY) * self.tileSize
-                    noMoveY = True
+            try:
+
+                if (dX < 0):
+                    if (self.noNoZone[floor(potNewX)][floor(currY)] == "wall"):
+                        self.positionX = ceil(potNewX) * self.tileSize
+                        noMoveX = True
+                if (dX > 0):
+                    if (self.noNoZone[ceil(potNewX)][floor(currY)] == "wall"):
+                        self.positionX = floor(potNewX) * self.tileSize
+                        noMoveX = True
+                if (dY < 0):
+                    if (self.noNoZone[floor(currX)][floor(potNewY)] == "wall"):
+                        self.positionY = ceil(potNewY) * self.tileSize
+                        noMoveY = True
+                if (dY > 0):
+                    if (self.noNoZone[floor(currX)][ceil(potNewY)] == "wall"):
+                        self.positionY = floor(potNewY) * self.tileSize
+                        noMoveY = True
+            except IndexError:
+                currX = 0
 
             if (not noMoveX):
                 self.positionX += dX * self.playerSpeed

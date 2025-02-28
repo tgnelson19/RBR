@@ -15,9 +15,9 @@ class Variables:
         pygame.init()  # Initializes a window
         pygame.display.set_caption("Little Dude")
 
-        scalar = 1
+        scalar = 1 #For future use for non-fullscreen gameplay
 
-        self.tileSizeGlobal = 40
+        self.tileSizeGlobal = 40 #Global tile size that should hopefully not look too bad for people...
 
         self.infoObject = pygame.display.Info() # Gets info about native monitor res
         self.sW, self.sH = (self.infoObject.current_w/scalar, self.infoObject.current_h/scalar)
@@ -53,7 +53,7 @@ class Variables:
         self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
         self.enemyWrangler.newNoNoZone(self.background.currentLayout, self.background.tileSize)
 
-        
+        self.highestLevel = 0
 
         self.baseNumKilledNeeded = 25
         self.baseOneInChance = 45
@@ -99,6 +99,10 @@ class Variables:
         textRect = textRender.get_rect(center = (self.sW/2, self.sH*(2/3)))
         self.screen.blit(textRender, textRect)
 
+        textRender = self.font.render("Highest Level So Far: " + str(self.highestLevel), True, (0,0,0))
+        textRect = textRender.get_rect(center = (self.sW/2, self.sH*(4/5)))
+        self.screen.blit(textRender, textRect)
+
         for event in pygame.event.get():  # Main event handler
             if event.type == pygame.QUIT:
                 self.done = True  # Close the entire program
@@ -109,7 +113,7 @@ class Variables:
                 if event.key == pygame.K_SPACE:
                     self.state = "gameRun"
 
-        self.bugCheckerOnMousePos()
+        #self.bugCheckerOnMousePos()
         self.finishPaint(pygame.Color(245,245,220))
 
     ##########################################################################################################
@@ -130,7 +134,7 @@ class Variables:
 
         self.displayNumOfEnemiesKilled()
 
-        playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
+        
         if (self.autoFire):
             self.character.handlingBullets(self.screen, True, self.mouseX, self.mouseY)
         else:
@@ -143,9 +147,14 @@ class Variables:
         self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
         self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
 
+        playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
+
         self.enemyWrangler.expCount = self.character.shareExp(self.screen, self.enemyWrangler.expCount)
+        
+        self.highestLevel = 0
 
         if(self.enemyWrangler.dead == True):
+            self.highestLevel = self.character.currentLevel
             self.state = "titleScreen"
 
 
@@ -156,6 +165,8 @@ class Variables:
 
 
         if (playerDecision != "no"):
+
+            print(playerDecision)
 
             self.background.makeDefaultRoom()
             self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
@@ -174,18 +185,18 @@ class Variables:
             elif (self.oneInChance > 1):
                 self.oneInChance -= 1
         
-        if (playerDecision == "bottom"):
-            self.character.positionX = (self.sW / 2) - (self.character.playerSize / 2)
-            self.character.positionY = self.background.tileSize + 5
-        elif (playerDecision == "left"):
-            self.character.positionX = self.background.tileSize + 5
-            self.character.positionY = (self.sH / 2) - (self.character.playerSize / 2)
-        elif (playerDecision == "right"):
-            self.character.positionX = self.sW - (self.background.tileSize + 5)
-            self.character.positionY = (self.sH / 2) - (self.character.playerSize / 2)
-        elif (playerDecision == "top"):
-            self.character.positionX = (self.sW / 2) - (self.character.playerSize / 2)
-            self.character.positionY = self.sH - (self.background.tileSize + 5)
+            if (playerDecision == "bottom"):
+                self.character.positionX = (self.sW / 2) - (self.background.tileSize / 2)
+                self.character.positionY = self.background.tileSize + 5
+            elif (playerDecision == "right"):
+                self.character.positionX = self.background.tileSize + 5
+                self.character.positionY = (self.sH / 2) - (self.background.tileSize/ 2)
+            elif (playerDecision == "left"):
+                self.character.positionX = self.sW - (self.background.tileSize*2 + 5)
+                self.character.positionY = (self.sH / 2) - (self.background.tileSize / 2)
+            elif (playerDecision == "top"):
+                self.character.positionX = (self.sW / 2) - (self.background.tileSize / 2)
+                self.character.positionY = self.sH - (self.background.tileSize*2 + 5)
 
 
 
