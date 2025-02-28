@@ -22,6 +22,7 @@ class Character:
 
         self.liveRounds = [] #Storage of every single round on the screen
         self.projectileCount = 1
+        self.multiBallLevelMod = 5
         self.azimuthalProjectileAngle = 0
         self.attackCooldownStat = 20
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
@@ -46,7 +47,7 @@ class Character:
     def resetCharStats(self):
         self.liveRounds = [] #Storage of every single round on the screen
         self.projectileCount = 1
-        self.azimuthalProjectileAngle = pi/4
+        self.azimuthalProjectileAngle = pi/16
         self.attackCooldownStat = 20
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
         self.bulletSpeed = 5
@@ -61,11 +62,17 @@ class Character:
         if (self.attackCooldownStat > 1):
             self.attackCooldownStat = int(self.attackCooldownStat / self.levelMod)
         
-        if (self.bulletSpeed < 100):
-            self.bulletSpeed  = (self.bulletSpeed* self.levelMod)
+        if (self.bulletSpeed < 50):
+            self.bulletSpeed = (self.bulletSpeed* self.levelMod)
+
+        if (self.playerSpeed < 50):
+            self.playerSpeed *= (1+(self.levelMod-1)/3)
         
         if (self.bulletRange < 1000):
-            self.bulletRange  = (self.bulletRange*self.levelMod)
+            self.bulletRange = (self.bulletRange*self.levelMod)
+
+        if(self.currentLevel % self.multiBallLevelMod == 0):
+            self.projectileCount += 1
 
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):

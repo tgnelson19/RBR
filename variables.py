@@ -61,6 +61,7 @@ class Variables:
         self.oneInChance = self.baseOneInChance
 
         self.enemiesEnabled = True
+        self.autoFire = False
 
         self.stage = 1
 
@@ -87,9 +88,15 @@ class Variables:
         self.character.currentLevel = 0
         self.character.expNeededForNextLevel = self.character.baseExpNeededForNextLevel
         self.character.resetCharStats()
+        self.enemyWrangler.stage = 1
+        self.autoFire = False
         
         textRender = self.font.render("RbR : Press Space To Play", True, (0,0,0))
         textRect = textRender.get_rect(center = (self.sW/2, self.sH/2))
+        self.screen.blit(textRender, textRect)
+
+        textRender = self.font.render("WASD to Move, Mouse to Shoot, I to Autofire", True, (0,0,0))
+        textRect = textRender.get_rect(center = (self.sW/2, self.sH*(2/3)))
         self.screen.blit(textRender, textRect)
 
         for event in pygame.event.get():  # Main event handler
@@ -124,7 +131,10 @@ class Variables:
         self.displayNumOfEnemiesKilled()
 
         playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
-        self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
+        if (self.autoFire):
+            self.character.handlingBullets(self.screen, True, self.mouseX, self.mouseY)
+        else:
+            self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
         self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY)
         self.enemyWrangler.updateExperience(self.screen, self.background.tileSize, self.character.auraSpeed)
@@ -154,6 +164,7 @@ class Variables:
             self.numKilledNeeded += 5
             self.enemyWrangler.enemyList.clear()
             self.stage += 1
+            self.enemyWrangler.stage = self.stage
             self.enemyWrangler.experienceList.clear()
 
             if(self.oneInChance > 10):
@@ -212,12 +223,17 @@ class Variables:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.done = True
+                    self.state = "titleScreen"
 
                 if event.key == pygame.K_w or event.key == pygame.K_UP: self.keysDown[0] = True
                 if event.key == pygame.K_s or event.key == pygame.K_DOWN: self.keysDown[2] = True
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT: self.keysDown[1] = True
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT: self.keysDown[3] = True
+                if event.key == pygame.K_i: 
+                    if(self.autoFire == True):
+                        self.autoFire = False
+                    else:
+                        self.autoFire = True
 
             if event.type == pygame.KEYUP:
                     if event.key == pygame.K_w or event.key == pygame.K_UP: self.keysDown[0] = False

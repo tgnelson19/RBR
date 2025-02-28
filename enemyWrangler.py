@@ -14,6 +14,10 @@ class EnemyWrangler:
 
         self.tileSize = tileSize
 
+        self.stage = 1
+
+        self.enemySpeedMod = 1.2
+
         self.numOfEnemiesKilled = 0
 
         self.dead = False
@@ -48,7 +52,7 @@ class EnemyWrangler:
                 elif (spawnSeed == 4):
                     x = w - 1
                     y = randint(1,h - 1)
-                self.enemyList.append(Enemy(x, y, 1, self.tileSize, pygame.Color(255,0,0), 1))
+                self.enemyList.append(Enemy(x, y, 1+(self.stage-1)*self.enemySpeedMod, self.tileSize, pygame.Color(255,0,0), 1))
 
     def updateEnemies(self, screen, playerX, playerY):
 
