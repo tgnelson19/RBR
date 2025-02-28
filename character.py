@@ -1,6 +1,7 @@
 import pygame
 from math import floor, ceil, atan, pi
 from bullet import Bullet
+from levelBar import LevelBar
 
 class Character:
 
@@ -14,7 +15,31 @@ class Character:
         self.noNoZone = None
 
         self.liveRounds = [] #Storage of every single round on the screen
-        self.projectileCount = 1 #IN PROGRESS, currently not used but will be amount of projectiles (possibly)
+        self.projectileCount = 1
+        self.azimuthalProjectileAngle = 0
+        self.attackCooldownStat = 20
+        self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
+        self.bulletSpeed = 5
+        self.bulletRange = 200
+        self.bulletSize = 10
+        self.bulletColor = pygame.Color(125,125,125)
+        self.aura = 50
+        self.auraSpeed = 4
+        self.levelMod = 1.1
+
+        self.currentLevel = 0
+        self.expNeededForNextLevel = 50
+        self.baseExpNeededForNextLevel = 50
+        self.levelScaleIncreaseFunction = 1.2
+        self.levelBar = LevelBar()
+
+    def newNoNoZone(self, noNoZone, tileSize):
+        self.noNoZone = noNoZone
+        self.tileSize = tileSize
+
+    def resetCharStats(self):
+        self.liveRounds = [] #Storage of every single round on the screen
+        self.projectileCount = 1
         self.azimuthalProjectileAngle = pi/4
         self.attackCooldownStat = 20
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
@@ -25,9 +50,19 @@ class Character:
         self.aura = 50
         self.auraSpeed = 4
 
-    def newNoNoZone(self, noNoZone, tileSize):
-        self.noNoZone = noNoZone
-        self.tileSize = tileSize
+    def levelUpStatsBasic(self):
+
+        if (self.attackCooldownStat > 1):
+            self.attackCooldownStat = int(self.attackCooldownStat / self.levelMod)
+        
+        if (self.bulletSpeed < 100):
+            self.bulletSpeed  = (self.bulletSpeed* self.levelMod)
+        
+        if (self.bulletRange < 1000):
+            self.bulletRange  = (self.bulletRange*self.levelMod)
+
+        self.aura = 50
+        self.auraSpeed = 4
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
 
@@ -82,6 +117,19 @@ class Character:
             elif (bullet.remFlag == True):
                 self.liveRounds.remove(bullet)
 
+    def shareExp(self, screen, exp):
+        percentage = exp/self.expNeededForNextLevel
+        
+
+        if (exp >= self.expNeededForNextLevel):
+            self.currentLevel += 1
+            self.expNeededForNextLevel *= self.levelScaleIncreaseFunction
+            self.levelBar.drawBar(screen, 1)
+            self.levelUpStatsBasic()
+            return 0
+        else:
+            self.levelBar.drawBar(screen, percentage)
+            return exp
 
     def moveAndDrawPlayer(self, screen, keysDown):
 

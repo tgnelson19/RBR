@@ -79,6 +79,9 @@ class Variables:
         self.enemyWrangler.dead = False
         self.keysDown = [False, False, False, False]
         self.enemyWrangler.expCount = 0
+        self.character.currentLevel = 0
+        self.character.expNeededForNextLevel = self.character.baseExpNeededForNextLevel
+        self.character.resetCharStats()
         
         textRender = self.font.render("RbR : Press Space To Play", True, (0,0,0))
         textRect = textRender.get_rect(center = (self.sW/2, self.sH/2))
@@ -124,6 +127,8 @@ class Variables:
         
         self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
         self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
+
+        self.enemyWrangler.expCount = self.character.shareExp(self.screen, self.enemyWrangler.expCount)
 
         if(self.enemyWrangler.dead == True):
             self.state = "titleScreen"
@@ -176,11 +181,11 @@ class Variables:
         
    
     def displayNumOfEnemiesKilled(self):
-        textRender = self.font.render("Stage: " + str(self.stage) + " | Enemies Killed: " + str(self.enemyWrangler.numOfEnemiesKilled), True, (0,0,0))
+        textRender = self.font.render("Stage: " + str(self.stage), True, (0,0,0))
         textRect = textRender.get_rect(topleft = (35,35))
         self.screen.blit(textRender, textRect)
-        textRender = self.font.render("EXP: " + str(self.enemyWrangler.expCount), True, (0,0,0))
-        textRect = textRender.get_rect(topleft = (65,65))
+        textRender = self.font.render("Lv: " + str(self.character.currentLevel), True, (0,0,0))
+        textRect = textRender.get_rect(topleft = (200,35))
         self.screen.blit(textRender, textRect)
 
     def bugCheckerOnMousePos(self):

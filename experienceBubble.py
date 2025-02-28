@@ -37,28 +37,34 @@ class ExperienceBubble:
             currX = self.posX / tileSize #Current Position
             currY = self.posY / tileSize #Current Position
 
-            if (-cos(self.direction) < 0):
-                if (noNoZone[floor(potNewX)][floor(currY)] == "wall"):
-                    self.positionX = ceil(potNewX) * tileSize
-                    noMoveX = True
-            if (-cos(self.direction) > 0):
-                if (noNoZone[ceil(potNewX)][floor(currY)] == "wall"):
-                    self.positionX = floor(potNewX) * tileSize
-                    noMoveX = True
-            if (-sin(self.direction) < 0):
-                if (noNoZone[floor(currX)][floor(potNewY)] == "wall"):
-                    self.positionY = ceil(potNewY) * tileSize
-                    noMoveY = True
-            if (-sin(self.direction) > 0):
-                if (noNoZone[floor(currX)][ceil(potNewY)] == "wall"):
-                    self.positionY = floor(potNewY) * tileSize
-                    noMoveY = True
+            try:
 
-            if (not noMoveX):
-                self.posX -= self.speed*cos(self.direction)
+                if (-cos(self.direction) < 0):
+                    if (noNoZone[floor(potNewX)][floor(currY)] == "wall"):
+                        self.positionX = ceil(potNewX) * tileSize
+                        noMoveX = True
+                if (-cos(self.direction) > 0):
+                    if (noNoZone[ceil(potNewX)][floor(currY)] == "wall"):
+                        self.positionX = floor(potNewX) * tileSize
+                        noMoveX = True
+                if (-sin(self.direction) < 0):
+                    if (noNoZone[floor(currX)][floor(potNewY)] == "wall"):
+                        self.positionY = ceil(potNewY) * tileSize
+                        noMoveY = True
+                if (-sin(self.direction) > 0):
+                    if (noNoZone[floor(currX)][ceil(potNewY)] == "wall"):
+                        self.positionY = floor(potNewY) * tileSize
+                        noMoveY = True
 
-            if (not noMoveY):
-                self.posY -= self.speed*sin(self.direction)  
+                if (not noMoveX):
+                    self.posX -= self.speed*cos(self.direction)
+
+                if (not noMoveY):
+                    self.posY -= self.speed*sin(self.direction)  
+                    
+            except IndexError:
+                self.speed = 0
+                self.dir = 0
 
         else:
             self.posX -= pAuraSpeed*cos(self.direction)
