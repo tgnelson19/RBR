@@ -30,7 +30,7 @@ class Variables:
         self.clock = pygame.time.Clock()  # Main time keeper
         self.done = False  # Determines if the game is over or not
 
-        self.fontSize = 30
+        self.fontSize = 15
         self.font = pygame.font.Font("media/coolveticarg.otf", self.fontSize)
 
         self.mouseDown = False
@@ -182,10 +182,10 @@ class Variables:
    
     def displayNumOfEnemiesKilled(self):
         textRender = self.font.render("Stage: " + str(self.stage), True, (0,0,0))
-        textRect = textRender.get_rect(topleft = (35,35))
+        textRect = textRender.get_rect(topleft = (30,3))
         self.screen.blit(textRender, textRect)
         textRender = self.font.render("Lv: " + str(self.character.currentLevel), True, (0,0,0))
-        textRect = textRender.get_rect(topleft = (200,35))
+        textRect = textRender.get_rect(topleft = (485,3))
         self.screen.blit(textRender, textRect)
 
     def bugCheckerOnMousePos(self):
