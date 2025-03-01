@@ -3,7 +3,7 @@ from math import pi, atan, cos, sin
 
 class Enemy:
 
-    def __init__(self, posX, posY, speed, size, color, damage):
+    def __init__(self, posX, posY, speed, size, color, damage, frameRate):
         self.posX = posX
         self.posY = posY
         self.speed = speed
@@ -11,6 +11,7 @@ class Enemy:
         self.color = color
         self.damage = damage
         self.direction = 0
+        self.frameRate = frameRate
 
 
     def updateAndDrawEnemy(self, screen, playerX, playerY):
@@ -42,8 +43,8 @@ class Enemy:
 
                 self.direction = -atan(deltaY/deltaX) + pi
 
-        self.posX -= self.speed*cos(self.direction)
-        self.posY -= self.speed*sin(self.direction)
+        self.posX -= self.speed*cos(self.direction) * (120/self.frameRate)
+        self.posY -= self.speed*sin(self.direction) * (120/self.frameRate)
 
         pygame.draw.rect(screen, self.color, pygame.Rect(self.posX, self.posY, self.size, self.size))
 

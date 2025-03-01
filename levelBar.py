@@ -14,7 +14,7 @@ class LevelBar:
         self.posY = int(self.tileSize/5)
 
         self.expColor = (255,0,0)
-        self.outerBarColor = pygame.Color(90,90,90)
+        self.outerBarColor = pygame.Color(70,70,70)
         self.fakeInnerColor = pygame.Color(20,20,20)
         self.inDel = 3
 

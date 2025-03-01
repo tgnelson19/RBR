@@ -5,7 +5,7 @@ from levelBar import LevelBar
 
 class Character:
 
-    def __init__(self, defX, defY, tileSize, numTX, numTY, sW, sH):
+    def __init__(self, defX, defY, tileSize, numTX, numTY, sW, sH, frameRate):
         self.positionX = defX
         self.positionY = defY
         self.playerSpeed = 3.5
@@ -15,6 +15,7 @@ class Character:
         self.numTY = numTY
         self.sW = sW
         self.sH = sH
+        self.frameRate = frameRate
         
         self.playerColor = pygame.Color(0,0,255)
 
@@ -77,7 +78,7 @@ class Character:
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
 
-        if (self.attackCooldownTimer == 0 and mouseDown):
+        if (self.attackCooldownTimer <= 0 and mouseDown):
 
             self.attackCooldownTimer = self.attackCooldownStat
 
@@ -112,10 +113,10 @@ class Character:
 
                     direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (self.projectileCount-1))
 
-                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, self.sW, self.sH))
+                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, self.sW, self.sH, self.frameRate))
 
         elif(self.attackCooldownTimer > 0):
-            self.attackCooldownTimer -= 1
+            self.attackCooldownTimer -= 1 * (120/self.frameRate)
 
         for bullet in self.liveRounds:
             bullet.updateAndDrawBullet(screen)
@@ -175,8 +176,8 @@ class Character:
         currX = self.positionX / self.tileSize #Current Position
         currY = self.positionY / self.tileSize #Current Position
 
-        potNewX = (self.positionX + (dX * self.playerSpeed)) / self.tileSize #Exact float X coordinate desired
-        potNewY = (self.positionY + (dY * self.playerSpeed)) / self.tileSize #Exact float Y coordinate desired
+        potNewX = (self.positionX + (dX * self.playerSpeed) * (120/self.frameRate)) / self.tileSize #Exact float X coordinate desired
+        potNewY = (self.positionY + (dY * self.playerSpeed) * (120/self.frameRate)) / self.tileSize #Exact float Y coordinate desired
 
         if (potNewX < 0):
             playerDecision = "left"
@@ -220,10 +221,10 @@ class Character:
                 currX = 0
 
             if (not noMoveX):
-                self.positionX += dX * self.playerSpeed
+                self.positionX += (dX * self.playerSpeed) * (120/self.frameRate)
 
             if (not noMoveY):
-                self.positionY += dY * self.playerSpeed
+                self.positionY += (dY * self.playerSpeed) * (120/self.frameRate)
 
         #Shows Aura
         #pygame.draw.rect(screen, pygame.Color(0,100,0), pygame.Rect(self.positionX - self.aura, self.positionY - self.aura, self.playerSize + 2*self.aura, self.playerSize +2*self.aura))

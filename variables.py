@@ -18,6 +18,8 @@ class Variables:
         scalar = 1 #For future use for non-fullscreen gameplay
 
         self.tileSizeGlobal = 40 #Global tile size that should hopefully not look too bad for people...
+        
+        self.frameRate = 360
 
         self.infoObject = pygame.display.Info() # Gets info about native monitor res
         self.sW, self.sH = (self.infoObject.current_w/scalar, self.infoObject.current_h/scalar)
@@ -37,17 +39,23 @@ class Variables:
 
         self.fontSize = int(self.tileSizeGlobal*(2/3))
         self.font = pygame.font.Font("media/coolveticarg.otf", self.fontSize)
+        self.textColor = (245,245,220)
 
         self.mouseDown = False
         self.mouseX, self.mouseY = 0,0
 
         self.keysDown = [False, False, False, False]
 
-        self.character = Character(self.sW / 2, self.sH / 2, self.tileSizeGlobal, self.numTX, self.numTY, self.sW, self.sH)
+        self.character = Character(self.sW / 2, self.sH / 2, self.tileSizeGlobal, self.numTX, self.numTY, self.sW, self.sH, self.frameRate)
 
-        self.enemyWrangler = EnemyWrangler(self.tileSizeGlobal)
+        self.enemyWrangler = EnemyWrangler(self.tileSizeGlobal, self.frameRate)
+        
+        self.backgroundColor = pygame.Color(0,0,0)
+        self.darkColor = pygame.Color(0,0,0)
+        self.lightColor = pygame.Color(245,245,220)
+        self.darkLightMode = "Dark"
 
-        self.background = Background(self.sW, self.sH, self.tileSizeGlobal)
+        self.background = Background(self.sW, self.sH, self.tileSizeGlobal, self.backgroundColor)
         self.background.makeDefaultRoom()
 
         self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
@@ -64,11 +72,13 @@ class Variables:
         self.autoFire = False
 
         self.stage = 1
+        
+        
 
 
 
     def doTheTitleScreen(self):
-        self.clock.tick(120)  # Keeps program to only 120 frames per second
+        self.clock.tick(self.frameRate)  # Keeps program to only 120 frames per second
         self.mouseX, self.mouseY = pygame.mouse.get_pos() # Saves current mouse position
 
         self.enemyWrangler.enemyList.clear()
@@ -91,15 +101,15 @@ class Variables:
         self.enemyWrangler.stage = 1
         self.autoFire = False
         
-        textRender = self.font.render("RbR : Press Space To Play", True, (0,0,0))
+        textRender = self.font.render("RbR : Press Space To Play", True, self.textColor)
         textRect = textRender.get_rect(center = (self.sW/2, self.sH/2))
         self.screen.blit(textRender, textRect)
 
-        textRender = self.font.render("WASD to Move, Mouse to Shoot, I to Autofire", True, (0,0,0))
+        textRender = self.font.render("WASD to Move, Mouse to Shoot, I to Autofire, O for light/dark mode", True, self.textColor)
         textRect = textRender.get_rect(center = (self.sW/2, self.sH*(2/3)))
         self.screen.blit(textRender, textRect)
 
-        textRender = self.font.render("Highest Level So Far: " + str(self.highestLevel), True, (0,0,0))
+        textRender = self.font.render("Highest Level So Far: " + str(self.highestLevel), True, self.textColor)
         textRect = textRender.get_rect(center = (self.sW/2, self.sH*(4/5)))
         self.screen.blit(textRender, textRect)
 
@@ -112,9 +122,16 @@ class Variables:
                     self.done = True
                 if event.key == pygame.K_SPACE:
                     self.state = "gameRun"
+                if event.key == pygame.K_o:
+                    if self.darkLightMode:
+                        self.darkLightMode = False
+                        self.backgroundColor = self.lightColor
+                    else:
+                        self.darkLightMode = True
+                        self.backgroundColor = self.darkColor
 
         #self.bugCheckerOnMousePos()
-        self.finishPaint(pygame.Color(245,245,220))
+        self.finishPaint(self.backgroundColor)
 
     ##########################################################################################################
 
@@ -128,7 +145,7 @@ class Variables:
 
     # Put functions to do things here (Main chunks of code)
 
-        self.background.displayCurrentRoom(self.screen)
+        self.background.displayCurrentRoom(self.screen, self.backgroundColor)
 
         #self.bugCheckerOnMousePos() # Helps determine mouse position
 
@@ -165,8 +182,6 @@ class Variables:
 
 
         if (playerDecision != "no"):
-
-            print(playerDecision)
 
             self.background.makeDefaultRoom()
             self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
@@ -208,15 +223,15 @@ class Variables:
         
    
     def displayNumOfEnemiesKilled(self):
-        textRender = self.font.render("Stage: " + str(self.stage), True, (0,0,0))
+        textRender = self.font.render("Stage: " + str(self.stage), True, self.textColor)
         textRect = textRender.get_rect(topleft = (int(self.tileSizeGlobal*1.5), int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
-        textRender = self.font.render("Lv: " + str(self.character.currentLevel), True, (0,0,0))
+        textRender = self.font.render("Lv: " + str(self.character.currentLevel), True, self.textColor)
         textRect = textRender.get_rect(topleft = (int(self.sW/1.65), int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
 
     def bugCheckerOnMousePos(self):
-        textRender = self.font.render(str(self.mouseX) + ", " + str(self.mouseY), True, (0,0,0))
+        textRender = self.font.render(str(self.mouseX) + ", " + str(self.mouseY), True, self.textColor)
         textRect = textRender.get_rect(topleft = (10,10))
         self.screen.blit(textRender, textRect)
 
@@ -225,7 +240,7 @@ class Variables:
         self.screen.fill(color)  # Clears screen with a black color
 
     def eventHandler(self):
-        self.clock.tick(120)  # Keeps program to only 120 frames per second
+        self.clock.tick(self.frameRate)  # Keeps program to only 120 frames per second
         self.mouseX, self.mouseY = pygame.mouse.get_pos() # Saves current mouse position
 
         for event in pygame.event.get():  # Main event handler
@@ -245,6 +260,13 @@ class Variables:
                         self.autoFire = False
                     else:
                         self.autoFire = True
+                if event.key == pygame.K_o:
+                    if self.darkLightMode:
+                        self.darkLightMode = False
+                        self.backgroundColor = self.lightColor
+                    else:
+                        self.darkLightMode = True
+                        self.backgroundColor = self.darkColor
 
             if event.type == pygame.KEYUP:
                     if event.key == pygame.K_w or event.key == pygame.K_UP: self.keysDown[0] = False

@@ -3,7 +3,7 @@ from math import sin, cos, sqrt
 
 class Bullet:
 
-    def __init__(self, pX, pY, speed, direc, bRange, size, color, sW, sH):
+    def __init__(self, pX, pY, speed, direc, bRange, size, color, sW, sH, frameRate):
         self.posX = pX
         self.posY = pY
         self.iPosX = pX
@@ -16,12 +16,13 @@ class Bullet:
         self.color = color
         self.bRange = bRange
         self.remFlag = False
+        self.frameRate = frameRate
 
 
     def updateAndDrawBullet(self, screen):
 
-        self.posX = self.posX + self.speed*cos(self.direc)
-        self.posY = self.posY - self.speed*sin(self.direc)
+        self.posX = self.posX + (self.speed*cos(self.direc)) * (120/self.frameRate)
+        self.posY = self.posY - (self.speed*sin(self.direc)) * (120/self.frameRate)
 
         if(self.posX >= self.sW):
             self.posX = self.sW - 1

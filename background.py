@@ -2,7 +2,7 @@ import pygame
 
 class Background:
 
-    def __init__(self, w, h, tileSize):
+    def __init__(self, w, h, tileSize, bckColor):
 
         self.sW = w
         self.sH = h
@@ -14,8 +14,8 @@ class Background:
         self.numVerti = int(self.sH/self.tileSize)
 
         self.tileTypes = {
-            "wall": pygame.Color(128,128,128), 
-            "default" : pygame.Color(245,245,220)
+            "wall": pygame.Color(90,90,90), 
+            "default" : bckColor
             }
 
         self.currentLayout = [[0 for _ in range(self.numVerti)] for _ in range(self.numHori)]
@@ -44,7 +44,9 @@ class Background:
         
 
     
-    def displayCurrentRoom(self, screen):
+    def displayCurrentRoom(self, screen, backColor):
+        
+        self.tileTypes["default"] = backColor
 
         for i in range(self.numHori):
             for j in range(self.numVerti):
