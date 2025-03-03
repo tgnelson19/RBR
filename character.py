@@ -49,6 +49,7 @@ class Character:
         self.liveRounds = [] #Storage of every single round on the screen
         self.projectileCount = 1
         self.azimuthalProjectileAngle = pi/16
+        self.playerSpeed = 3.5
         self.attackCooldownStat = 20
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
         self.bulletSpeed = 5

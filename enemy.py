@@ -3,13 +3,14 @@ from math import pi, atan, cos, sin
 
 class Enemy:
 
-    def __init__(self, posX, posY, speed, size, color, damage, frameRate):
+    def __init__(self, posX, posY, speed, size, color, damage, hp, frameRate):
         self.posX = posX
         self.posY = posY
         self.speed = speed
         self.size = size
         self.color = color
         self.damage = damage
+        self.hp = hp
         self.direction = 0
         self.frameRate = frameRate
 

@@ -19,6 +19,8 @@ class EnemyWrangler:
 
         self.enemySpeedMod = 1.2
 
+        self.experienceStageMod = 1.1
+
         self.numOfEnemiesKilled = 0
 
         self.dead = False
@@ -53,7 +55,7 @@ class EnemyWrangler:
                 elif (spawnSeed == 4):
                     x = w - 1
                     y = randint(1,h - 1)
-                self.enemyList.append(Enemy(x, y, 1+(self.stage-1)*self.enemySpeedMod, self.tileSize, pygame.Color(255,0,0), 1, self.frameRate))
+                self.enemyList.append(Enemy(x, y, 1+(self.stage-1)*self.enemySpeedMod, self.tileSize, pygame.Color(255,0,0), 1, 4, self.frameRate))
 
     def updateEnemies(self, screen, playerX, playerY):
 
@@ -73,7 +75,7 @@ class EnemyWrangler:
                         bullet.remFlag = True
                         self.enemyList.remove(eman)
                         self.numOfEnemiesKilled += 1
-                        self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, 10, self.frameRate))
+                        self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, 10*(self.stage*self.experienceStageMod), self.frameRate))
 
     def hurtPlayer(self, pX, pY, pSize):
         for eman in self.enemyList:

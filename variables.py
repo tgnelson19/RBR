@@ -19,7 +19,7 @@ class Variables:
 
         self.tileSizeGlobal = 40 #Global tile size that should hopefully not look too bad for people...
         
-        self.frameRate = 360
+        self.frameRate = 120
 
         self.infoObject = pygame.display.Info() # Gets info about native monitor res
         self.sW, self.sH = (self.infoObject.current_w/scalar, self.infoObject.current_h/scalar)
@@ -63,13 +63,15 @@ class Variables:
 
         self.highestLevel = 0
 
-        self.baseNumKilledNeeded = 25
-        self.baseOneInChance = 45
+        self.baseNumKilledNeeded = 15
+        self.baseOneInChance = 60
         self.numKilledNeeded = self.baseNumKilledNeeded
         self.oneInChance = self.baseOneInChance
 
         self.enemiesEnabled = True
         self.autoFire = False
+        self.gracePeriodStart = self.frameRate*3
+        self.gracePeriod = self.gracePeriodStart
 
         self.stage = 1
         
@@ -126,9 +128,11 @@ class Variables:
                     if self.darkLightMode:
                         self.darkLightMode = False
                         self.backgroundColor = self.lightColor
+                        self.textColor = self.darkColor
                     else:
                         self.darkLightMode = True
                         self.backgroundColor = self.darkColor
+                        self.textColor = self.lightColor
 
         #self.bugCheckerOnMousePos()
         self.finishPaint(self.backgroundColor)
@@ -175,13 +179,17 @@ class Variables:
             self.state = "titleScreen"
 
 
-        if (self.enemyWrangler.numOfEnemiesKilled > self.numKilledNeeded):
+        if (self.enemyWrangler.numOfEnemiesKilled >= self.numKilledNeeded):
             self.background.openDoors()
-        elif(self.enemiesEnabled):
+        elif(self.enemiesEnabled and self.gracePeriod == 0):
             self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, self.oneInChance)
+        else:
+            self.gracePeriod -= 1
 
 
         if (playerDecision != "no"):
+
+            self.gracePeriod = self.gracePeriodStart
 
             self.background.makeDefaultRoom()
             self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
@@ -229,6 +237,11 @@ class Variables:
         textRender = self.font.render("Lv: " + str(self.character.currentLevel), True, self.textColor)
         textRect = textRender.get_rect(topleft = (int(self.sW/1.65), int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
+        if (self.numKilledNeeded - self.enemyWrangler.numOfEnemiesKilled > 0):
+            textRender = self.font.render("Kills needed: " + str(self.numKilledNeeded - self.enemyWrangler.numOfEnemiesKilled), True, self.textColor)
+            textRect = textRender.get_rect(center = (int(self.sW/2), int(self.tileSizeGlobal/(2))))
+            self.screen.blit(textRender, textRect)
+        
 
     def bugCheckerOnMousePos(self):
         textRender = self.font.render(str(self.mouseX) + ", " + str(self.mouseY), True, self.textColor)
@@ -264,9 +277,11 @@ class Variables:
                     if self.darkLightMode:
                         self.darkLightMode = False
                         self.backgroundColor = self.lightColor
+                        self.textColor = self.darkColor
                     else:
                         self.darkLightMode = True
                         self.backgroundColor = self.darkColor
+                        self.textColor = self.lightColor
 
             if event.type == pygame.KEYUP:
                     if event.key == pygame.K_w or event.key == pygame.K_UP: self.keysDown[0] = False
