@@ -166,27 +166,29 @@ class Variables:
         self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
         
         self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
-        self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
+        newDamage = self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
+
+        self.highestLevel = 0
+
+        if (self.enemyWrangler.playerHit):
+            self.character.healthPoints -= newDamage
+            self.enemyWrangler.playerHit = False
+            if (self.character.healthPoints <= 0):
+                self.state = "titleScreen"
+                self.highestLevel = self.character.currentLevel
+
         self.enemyWrangler.updateDamageTexts(self.screen, self.tileSizeGlobal)
 
         playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
 
-        self.enemyWrangler.expCount = self.character.shareExp(self.screen, self.enemyWrangler.expCount)
+        self.enemyWrangler.expCount = self.character.shareExpAndHP(self.screen, self.enemyWrangler.expCount)
         
-        self.highestLevel = 0
-
-        if(self.enemyWrangler.dead == True):
-            self.highestLevel = self.character.currentLevel
-            self.state = "titleScreen"
-
-
         if (self.enemyWrangler.numOfEnemiesKilled >= self.numKilledNeeded):
             self.background.openDoors()
         elif(self.enemiesEnabled and self.gracePeriod == 0):
             self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, self.oneInChance)
         else:
             self.gracePeriod -= 1
-
 
         if (playerDecision != "no"):
 
@@ -235,8 +237,11 @@ class Variables:
         textRender = self.font.render("Stage: " + str(self.stage), True, self.textColor)
         textRect = textRender.get_rect(topleft = (int(self.tileSizeGlobal*1.5), int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
-        textRender = self.font.render("Lv: " + str(self.character.currentLevel), True, self.textColor)
+        textRender = self.font.render("Level " + str(self.character.currentLevel), True, self.textColor)
         textRect = textRender.get_rect(topleft = (int(self.sW/1.65), int(self.tileSizeGlobal/(25/3))))
+        self.screen.blit(textRender, textRect)
+        textRender = self.font.render("Health ", True, self.textColor)
+        textRect = textRender.get_rect(topleft = (int(self.sW/1.65), self.sH - self.tileSizeGlobal + int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
         if (self.numKilledNeeded - self.enemyWrangler.numOfEnemiesKilled > 0):
             textRender = self.font.render("Kills needed: " + str(self.numKilledNeeded - self.enemyWrangler.numOfEnemiesKilled), True, self.textColor)

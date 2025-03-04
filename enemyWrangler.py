@@ -26,11 +26,11 @@ class EnemyWrangler:
 
         self.numOfEnemiesKilled = 0
         
-        self.damageTextSizeBase = 50
+        self.damageTextSizeBase = 40
         
         self.enemyBaseHP = 5
 
-        self.dead = False
+        self.playerHit = False
 
         self.expCount = 0
 
@@ -95,7 +95,10 @@ class EnemyWrangler:
         for eman in self.enemyList:
             if(pX + pSize > eman.posX and pX < eman.posX + eman.size):
                 if(pY + pSize > eman.posY and pY < eman.posY + eman.size):
-                    self.dead = True
+                    self.playerHit = True
+                    self.enemyList.remove(eman)
+                    self.damageTextList.append(DamageText(pY, pX, self.damageTextSizeBase, pygame.Color(200,100,0), eman.damage, self.frameRate))
+                    return eman.damage
 
     def expForPlayer(self, pX, pY, pSize, pAura):
         for bubble in self.experienceList:

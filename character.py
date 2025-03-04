@@ -2,6 +2,7 @@ import pygame
 from math import floor, ceil, atan, pi
 from bullet import Bullet
 from levelBar import LevelBar
+from charHPBar import CharHPBar
 
 class Character:
 
@@ -35,12 +36,15 @@ class Character:
         self.auraSpeed = 4
         self.levelMod = 1.1
         self.damage = 1
+        self.healthPoints = 10
+        self.maxHealthPoints = 10
 
         self.currentLevel = 0
         self.expNeededForNextLevel = 50
         self.baseExpNeededForNextLevel = 50
         self.levelScaleIncreaseFunction = 1.2
         self.levelBar = LevelBar(self.sW, self.sH, self.tileSize)
+        self.healthBar = CharHPBar(self.sW, self.sH, self.tileSize)
 
     def newNoNoZone(self, noNoZone, tileSize):
         self.noNoZone = noNoZone
@@ -60,6 +64,7 @@ class Character:
         self.aura = self.tileSize*2
         self.auraSpeed = 4
         self.damage = 1
+        self.healthPoints = 10
 
     def levelUpStatsBasic(self):
 
@@ -78,7 +83,7 @@ class Character:
         if(self.currentLevel % self.multiBallLevelMod == 0):
             self.projectileCount += 1
             
-        self.damage += 1
+        self.damage += 0.25
 
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
@@ -139,9 +144,11 @@ class Character:
             except IndexError:
                 self.liveRounds.remove(bullet)
 
-    def shareExp(self, screen, exp):
+    def shareExpAndHP(self, screen, exp):
+
+        self.healthBar.drawBar(screen, self.healthPoints/self.maxHealthPoints)
+
         percentage = exp/self.expNeededForNextLevel
-        
 
         if (exp >= self.expNeededForNextLevel):
             self.currentLevel += 1
@@ -152,6 +159,8 @@ class Character:
         else:
             self.levelBar.drawBar(screen, percentage)
             return exp
+        
+
 
     def moveAndDrawPlayer(self, screen, keysDown):
 

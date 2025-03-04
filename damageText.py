@@ -17,7 +17,7 @@ class DamageText:
 
     def drawAndUpdateDamageText(self, screen, enSize):
         
-        speedMod = 1/2
+        speedMod = 1
 
         if (self.lifetime > 0):
             self.lifetime -= (120/self.frameRate)*2
