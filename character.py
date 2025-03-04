@@ -38,6 +38,7 @@ class Character:
         self.damage = 1
         self.healthPoints = 10
         self.maxHealthPoints = 10
+        self.bulletPierce = 1
 
         self.currentLevel = 0
         self.expNeededForNextLevel = 50
@@ -65,6 +66,8 @@ class Character:
         self.auraSpeed = 4
         self.damage = 1
         self.healthPoints = 10
+        self.bulletPierce = 1
+        self.defense = 0
 
     def levelUpStatsBasic(self):
 
@@ -84,6 +87,8 @@ class Character:
             self.projectileCount += 1
             
         self.damage += 0.25
+        self.bulletPierce += 1
+        self.defense += 1
 
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
@@ -123,7 +128,7 @@ class Character:
 
                     direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (self.projectileCount-1))
 
-                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, self.sW, self.sH, self.frameRate))
+                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, self.bulletPierce, self.sW, self.sH, self.frameRate))
 
         elif(self.attackCooldownTimer > 0):
             self.attackCooldownTimer -= 1 * (120/self.frameRate)

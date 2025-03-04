@@ -166,7 +166,7 @@ class Variables:
         self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
         
         self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
-        newDamage = self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
+        newDamage = self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.defense)
 
         self.highestLevel = 0
 

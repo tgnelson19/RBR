@@ -3,7 +3,7 @@ from math import sin, cos, sqrt
 
 class Bullet:
 
-    def __init__(self, pX, pY, speed, direc, bRange, size, color, sW, sH, frameRate):
+    def __init__(self, pX, pY, speed, direc, bRange, size, color, pierce, sW, sH, frameRate):
         self.posX = pX
         self.posY = pY
         self.iPosX = pX
@@ -15,6 +15,7 @@ class Bullet:
         self.size = size
         self.color = color
         self.bRange = bRange
+        self.bPierce = pierce
         self.remFlag = False
         self.frameRate = frameRate
 

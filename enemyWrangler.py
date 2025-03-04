@@ -83,22 +83,31 @@ class EnemyWrangler:
 
                 if(originX + bullet.size/2 > eman.posX and originX - bullet.size/2< eman.posX + eman.size):
                     if(originY + bullet.size/2> eman.posY and originY - bullet.size/2< eman.posY + eman.size):
-                        bullet.remFlag = True
-                        eman.hp -= damage
-                        self.damageTextList.append(DamageText(eman.posX, eman.posY, self.damageTextSizeBase, pygame.Color(200,120,0), damage, self.frameRate))
-                        if (eman.hp <= 0):
-                            self.enemyList.remove(eman)
-                            self.numOfEnemiesKilled += 1
-                            self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, 10*(self.stage*self.experienceStageMod), self.frameRate))
+                        if (bullet not in eman.cantTouchMeList):
+                            eman.cantTouchMeList.append(bullet)
+                            bullet.bPierce -= 1
+                            if (bullet.bPierce <= 0):
+                                bullet.remFlag = True
+                            eman.hp -= damage
+                            self.damageTextList.append(DamageText(eman.posX, eman.posY, self.damageTextSizeBase, pygame.Color(200,120,0), damage, self.frameRate))
+                            if (eman.hp <= 0):
+                                self.enemyList.remove(eman)
+                                self.numOfEnemiesKilled += 1
+                                self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, 10*(self.stage*self.experienceStageMod), self.frameRate))
 
-    def hurtPlayer(self, pX, pY, pSize):
+    def hurtPlayer(self, pX, pY, pSize, pDefense):
         for eman in self.enemyList:
             if(pX + pSize > eman.posX and pX < eman.posX + eman.size):
                 if(pY + pSize > eman.posY and pY < eman.posY + eman.size):
                     self.playerHit = True
                     self.enemyList.remove(eman)
-                    self.damageTextList.append(DamageText(pY, pX, self.damageTextSizeBase, pygame.Color(200,100,0), eman.damage, self.frameRate))
-                    return eman.damage
+                    trueDMG = eman.damage - pDefense
+                    if (trueDMG < 0):
+                        trueDMG = 0
+
+
+                    self.damageTextList.append(DamageText(pX, pY, self.damageTextSizeBase, pygame.Color(200,100,0), trueDMG, self.frameRate))
+                    return trueDMG
 
     def expForPlayer(self, pX, pY, pSize, pAura):
         for bubble in self.experienceList:

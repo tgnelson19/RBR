@@ -1,5 +1,6 @@
 import pygame
 from math import pi, atan, cos, sin
+from bullet import Bullet
 
 class Enemy:
 
@@ -13,6 +14,7 @@ class Enemy:
         self.hp = hp
         self.direction = 0
         self.frameRate = frameRate
+        self.cantTouchMeList = []
 
 
     def updateAndDrawEnemy(self, screen, playerX, playerY):
