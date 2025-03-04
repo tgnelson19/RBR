@@ -3,6 +3,7 @@ from os import environ
 from character import Character
 from background import Background
 from enemyWrangler import EnemyWrangler
+from levelingHandler import LevelingHandler
 
 class Variables:
 
@@ -61,6 +62,8 @@ class Variables:
         self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
         self.enemyWrangler.newNoNoZone(self.background.currentLayout, self.background.tileSize)
 
+        self.levelingHandler = LevelingHandler(self.tileSizeGlobal, self.frameRate, pygame.Color(90,90,90), self.sW, self.sH)
+
         self.highestLevel = 0
 
         self.baseNumKilledNeeded = 15
@@ -74,6 +77,8 @@ class Variables:
         self.gracePeriod = self.gracePeriodStart
 
         self.stage = 1
+
+        self.newRandoUps = False
         
         
 
@@ -134,6 +139,12 @@ class Variables:
                         self.backgroundColor = self.darkColor
                         self.textColor = self.lightColor
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.mouseDown = True
+                
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.mouseDown = False
+
         #self.bugCheckerOnMousePos()
         self.finishPaint(self.backgroundColor)
 
@@ -181,7 +192,13 @@ class Variables:
 
         playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
 
-        self.enemyWrangler.expCount = self.character.shareExpAndHP(self.screen, self.enemyWrangler.expCount)
+        tempExpHold = self.character.shareExpAndHP(self.screen, self.enemyWrangler.expCount)
+
+        if (tempExpHold == "levelUp"):
+            self.state = "leveling"
+            self.enemyWrangler.expCount = 0
+        else:
+            self.enemyWrangler.expCount = tempExpHold
         
         if (self.enemyWrangler.numOfEnemiesKilled >= self.numKilledNeeded):
             self.background.openDoors()
@@ -302,3 +319,53 @@ class Variables:
                 
             if event.type == pygame.MOUSEBUTTONUP:
                 self.mouseDown = False
+
+    def LevelingLogic(self):
+
+        self.clock.tick(self.frameRate)  # Keeps program to only 120 frames per second
+        self.mouseX, self.mouseY = pygame.mouse.get_pos() # Saves current mouse position
+
+        if (not self.newRandoUps):
+            self.levelingHandler.randomizeLevelUp()
+            self.newRandoUps = True
+
+        for event in pygame.event.get():  # Main event handler
+            if event.type == pygame.QUIT:
+                self.done = True  # Close the entire program
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.state = "titleScreen"
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouseDown = True
+                    
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.mouseDown = False
+
+        self.levelingHandler.drawCards(self.screen)
+        pDecision = self.levelingHandler.PlayerClicked(self.mouseDown, self.mouseX, self.mouseY)
+
+        if (pDecision == "leftCard"):
+            if (self.levelingHandler.leftCardUpgradeMath == "addative"):
+                self.character.collectiveAddStats[self.levelingHandler.leftCardUpgradeType].append(self.levelingHandler.upgradeRarity[self.levelingHandler.leftCardUpgradeRarity] * self.levelingHandler.upgradeBasicTypesAdd[self.levelingHandler.leftCardUpgradeType])
+            if (self.levelingHandler.leftCardUpgradeMath == "multiplicative"):
+                self.character.collectiveMultStats[self.levelingHandler.leftCardUpgradeType].append(1 + self.levelingHandler.upgradeRarity[self.levelingHandler.leftCardUpgradeRarity] * self.levelingHandler.upgradeBasicTypesMult[self.levelingHandler.leftCardUpgradeType])
+
+        elif (pDecision == "midCard"):
+            if (self.levelingHandler.midCardUpgradeMath == "addative"):
+                self.character.collectiveAddStats[self.levelingHandler.midCardUpgradeType].append(self.levelingHandler.upgradeRarity[self.levelingHandler.midCardUpgradeRarity] * self.levelingHandler.upgradeBasicTypesAdd[self.levelingHandler.midCardUpgradeType])
+            if (self.levelingHandler.midCardUpgradeMath == "multiplicative"):
+                self.character.collectiveMultStats[self.levelingHandler.midCardUpgradeType].append(1 + self.levelingHandler.upgradeRarity[self.levelingHandler.midCardUpgradeRarity] * self.levelingHandler.upgradeBasicTypesMult[self.levelingHandler.midCardUpgradeType])
+
+        elif (pDecision == "rightCard"):
+            if (self.levelingHandler.rightCardUpgradeMath == "addative"):
+                self.character.collectiveAddStats[self.levelingHandler.rightCardUpgradeType].append(self.levelingHandler.upgradeRarity[self.levelingHandler.rightCardUpgradeRarity] * self.levelingHandler.upgradeBasicTypesAdd[self.levelingHandler.rightCardUpgradeType])
+            if (self.levelingHandler.rightCardUpgradeMath == "multiplicative"):
+                self.character.collectiveMultStats[self.levelingHandler.rightCardUpgradeType].append(1 + self.levelingHandler.upgradeRarity[self.levelingHandler.rightCardUpgradeRarity] * self.levelingHandler.upgradeBasicTypesMult[self.levelingHandler.rightCardUpgradeType])
+
+        if (pDecision != "none"):
+            self.character.combarinoPlayerStats()
+            self.state = "gameRun"
+
+        pygame.display.flip()  # Displays currently drawn frame

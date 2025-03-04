@@ -39,6 +39,7 @@ class Character:
         self.healthPoints = 10
         self.maxHealthPoints = 10
         self.bulletPierce = 1
+        self.defense = 0
 
         self.currentLevel = 0
         self.expNeededForNextLevel = 50
@@ -47,9 +48,27 @@ class Character:
         self.levelBar = LevelBar(self.sW, self.sH, self.tileSize)
         self.healthBar = CharHPBar(self.sW, self.sH, self.tileSize)
 
+        self.collectiveStats = {"Defense" : self.defense, "Bullet Pierce" : self.bulletPierce, "Bullet Count" : self.projectileCount, "Spread Angle" : self.azimuthalProjectileAngle, 
+                                  "Attack Speed" : self.attackCooldownStat, "Bullet Speed" : self.bulletSpeed, "Bullet Range" : self.bulletRange, "Bullet Damage" : self.damage, 
+                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed}
+        
+        self.collectiveAddStats = {"Defense" : [0], "Bullet Pierce" : [0], "Bullet Count" : [0], "Spread Angle" : [0], 
+                                  "Attack Speed" : [0], "Bullet Speed" : [0], "Bullet Range" : [0], "Bullet Damage" : [0], 
+                                  "Bullet Size" : [0], "Player Speed" : [0]}
+        
+        self.collectiveMultStats = {"Defense" : [1], "Bullet Pierce" : [1], "Bullet Count" : [1], "Spread Angle" : [1], 
+                                  "Attack Speed" : [1], "Bullet Speed" : [1], "Bullet Range" : [1], "Bullet Damage" : [1], 
+                                  "Bullet Size" : [1], "Player Speed" : [1]}
+
     def newNoNoZone(self, noNoZone, tileSize):
         self.noNoZone = noNoZone
         self.tileSize = tileSize
+        
+    def multiply_list(self, list):
+        result = 1
+        for num in list:
+            result *= num
+        return result
 
     def resetCharStats(self):
         self.liveRounds = [] #Storage of every single round on the screen
@@ -69,26 +88,50 @@ class Character:
         self.bulletPierce = 1
         self.defense = 0
 
-    def levelUpStatsBasic(self):
-
-        if (self.attackCooldownStat > 1):
-            self.attackCooldownStat = int(self.attackCooldownStat / self.levelMod)
+        self.collectiveStats = {"Defense" : self.defense, "Bullet Pierce" : self.bulletPierce, "Bullet Count" : self.projectileCount, "Spread Angle" : self.azimuthalProjectileAngle, 
+                                  "Attack Speed" : self.attackCooldownStat, "Bullet Speed" : self.bulletSpeed, "Bullet Range" : self.bulletRange, "Bullet Damage" : self.damage, 
+                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed}
         
-        if (self.bulletSpeed < 50):
-            self.bulletSpeed = (self.bulletSpeed* self.levelMod)
-
-        if (self.playerSpeed < 50):
-            self.playerSpeed *= (1+(self.levelMod-1)/3)
+        self.collectiveAddStats = {"Defense" : [0], "Bullet Pierce" : [0], "Bullet Count" : [0], "Spread Angle" : [0], 
+                                  "Attack Speed" : [0], "Bullet Speed" : [0], "Bullet Range" : [0], "Bullet Damage" : [0], 
+                                  "Bullet Size" : [0], "Player Speed" : [0]}
         
-        if (self.bulletRange < 1000):
-            self.bulletRange = (self.bulletRange*self.levelMod)
+        self.collectiveMultStats = {"Defense" : [1], "Bullet Pierce" : [1], "Bullet Count" : [1], "Spread Angle" : [1], 
+                                  "Attack Speed" : [1], "Bullet Speed" : [1], "Bullet Range" : [1], "Bullet Damage" : [1], 
+                                  "Bullet Size" : [1], "Player Speed" : [1]}
 
-        if(self.currentLevel % self.multiBallLevelMod == 0):
-            self.projectileCount += 1
+    def combarinoPlayerStats(self):
+        self.projectileCount = (self.collectiveStats["Bullet Count"] + sum(self.collectiveAddStats["Bullet Count"])) * (self.multiply_list(self.collectiveMultStats["Bullet Count"]))
+        self.azimuthalProjectileAngle = (self.collectiveStats["Spread Angle"] + sum(self.collectiveAddStats["Spread Angle"])) * (self.multiply_list(self.collectiveMultStats["Spread Angle"]))
+        self.playerSpeed = (self.collectiveStats["Player Speed"] + sum(self.collectiveAddStats["Player Speed"])) * (self.multiply_list(self.collectiveMultStats["Player Speed"]))
+        self.attackCooldownStat = (self.collectiveStats["Attack Speed"] + sum(self.collectiveAddStats["Attack Speed"])) * (self.multiply_list(self.collectiveMultStats["Attack Speed"]))
+        self.bulletSpeed = (self.collectiveStats["Bullet Speed"] + sum(self.collectiveAddStats["Bullet Speed"])) * (self.multiply_list(self.collectiveMultStats["Bullet Speed"]))
+        self.bulletRange = (self.collectiveStats["Bullet Range"] + sum(self.collectiveAddStats["Bullet Range"])) * (self.multiply_list(self.collectiveMultStats["Bullet Range"]))
+        self.bulletSize = (self.collectiveStats["Bullet Size"] + sum(self.collectiveAddStats["Bullet Size"])) * (self.multiply_list(self.collectiveMultStats["Bullet Size"]))
+        self.damage = (self.collectiveStats["Bullet Damage"] + sum(self.collectiveAddStats["Bullet Damage"])) * (self.multiply_list(self.collectiveMultStats["Bullet Damage"]))
+        self.bulletPierce = (self.collectiveStats["Bullet Pierce"] + sum(self.collectiveAddStats["Bullet Pierce"])) * (self.multiply_list(self.collectiveMultStats["Bullet Pierce"]))
+        self.defense = (self.collectiveStats["Defense"] + sum(self.collectiveAddStats["Defense"])) * (self.multiply_list(self.collectiveMultStats["Defense"]))
+
+    # def levelUpStatsBasic(self):
+
+    #     if (self.attackCooldownStat > 1):
+    #         self.attackCooldownStat = int(self.attackCooldownStat / self.levelMod)
+        
+    #     if (self.bulletSpeed < 50):
+    #         self.bulletSpeed = (self.bulletSpeed* self.levelMod)
+
+    #     if (self.playerSpeed < 50):
+    #         self.playerSpeed *= (1+(self.levelMod-1)/3)
+        
+    #     if (self.bulletRange < 1000):
+    #         self.bulletRange = (self.bulletRange*self.levelMod)
+
+    #     if(self.currentLevel % self.multiBallLevelMod == 0):
+    #         self.projectileCount += 1
             
-        self.damage += 0.1
-        self.bulletPierce += 0
-        self.defense += 0
+    #     self.damage += 0.1
+    #     self.bulletPierce += 0
+    #     self.defense += 0
 
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
@@ -159,8 +202,8 @@ class Character:
             self.currentLevel += 1
             self.expNeededForNextLevel *= self.levelScaleIncreaseFunction
             self.levelBar.drawBar(screen, 1)
-            self.levelUpStatsBasic()
-            return 0
+            #self.levelUpStatsBasic()
+            return "levelUp"
         else:
             self.levelBar.drawBar(screen, percentage)
             return exp
@@ -251,3 +294,4 @@ class Character:
         pygame.draw.rect(screen, self.playerColor, pygame.Rect(self.positionX, self.positionY, self.playerSize, self.playerSize))
 
         return playerDecision
+    

@@ -25,6 +25,6 @@ class DamageText:
         if (self.lifetime <= 0):
             self.deleteMe = True
         
-        textRender = self.font.render("- " + str(format(self.value, '.2g')), True, self.color)
+        textRender = self.font.render("- " + str(format(self.value, '.3g')), True, self.color)
         textRect = textRender.get_rect(center = (self.posX + enSize/2, self.posY - self.deltaVal))
         screen.blit(textRender, textRect)
