@@ -68,7 +68,10 @@ class EnemyWrangler:
                 elif (spawnSeed == 4):
                     x = w - 1
                     y = randint(1,h - 1)
-                self.enemyList.append(Enemy(x, y, 1+(self.stage-1)*self.enemySpeedMod, self.tileSize, pygame.Color(255,0,0), 1, self.enemyBaseHP*self.stage, self.frameRate))
+
+                enemyRange = randint(5, 15) / 10 #Randomly generated enemies for each stage
+
+                self.enemyList.append(Enemy(x, y, (1+(self.stage-1)*self.enemySpeedMod) * enemyRange, int(self.tileSize / enemyRange), pygame.Color(255,0,0), (1+(self.stage-1)) / (enemyRange), (self.enemyBaseHP*self.stage) / (enemyRange), self.frameRate))
 
     def updateEnemies(self, screen, playerX, playerY):
 
@@ -104,8 +107,6 @@ class EnemyWrangler:
                     trueDMG = eman.damage - pDefense
                     if (trueDMG < 0):
                         trueDMG = 0
-
-
                     self.damageTextList.append(DamageText(pX, pY, self.damageTextSizeBase, pygame.Color(200,100,0), trueDMG, self.frameRate))
                     return trueDMG
 
