@@ -9,18 +9,22 @@ class DamageText:
         self.value = value
         self.textSize = textBaseSize
         self.lifetimeMax = framerate
+        self.frameRate = framerate
         self.lifetime = framerate
         self.deleteMe = False
+        self.deltaVal = 10
+        self.font = pygame.font.Font("media/coolveticarg.otf", int(self.textSize))
 
-    def drawAndUpdateDamageText(self, screen):
+    def drawAndUpdateDamageText(self, screen, enSize):
+        
+        speedMod = 1/2
 
-        if (self.lifetime > self.lifetimeMax * (3/4)):
-            self.lifetime -= 1
-            self.textSize *= (1.01*self.lifetimeMax)
         if (self.lifetime > 0):
-            self.lifetime -= 1
-            self.textSize /= (1.01*self.lifetimeMax)
+            self.lifetime -= (120/self.frameRate)*2
+            self.deltaVal += (120/self.frameRate)*(speedMod)
         if (self.lifetime <= 0):
             self.deleteMe = True
-
-        font = pygame.font.Font("media/coolveticarg.otf", self.textSize)
+        
+        textRender = self.font.render("- " + str(self.value), True, self.color)
+        textRect = textRender.get_rect(center = (self.posX + enSize/2, self.posY - self.deltaVal))
+        screen.blit(textRender, textRect)

@@ -4,11 +4,14 @@ from random import randint
 from bullet import Bullet
 from experienceBubble import ExperienceBubble
 from math import atan, pi
+from damageText import DamageText
 
 class EnemyWrangler:    
     def __init__(self, tileSize, frameRate):
         self.enemyList = []
         self.experienceList = []
+        self.damageTextList = []
+        
         self.frameRate = frameRate
 
         self.noNoZone = None
@@ -22,6 +25,10 @@ class EnemyWrangler:
         self.experienceStageMod = 1.1
 
         self.numOfEnemiesKilled = 0
+        
+        self.damageTextSizeBase = 50
+        
+        self.enemyBaseHP = 5
 
         self.dead = False
 
@@ -34,6 +41,12 @@ class EnemyWrangler:
     def updateExperience(self, screen, tileSize, pAuraSpeed):
         for bubble in self.experienceList:
             bubble.updateBubble(screen, self.noNoZone, tileSize, pAuraSpeed)
+            
+    def updateDamageTexts(self, screen, enSize):
+        for dText in self.damageTextList:
+            dText.drawAndUpdateDamageText(screen, enSize)
+            if (dText.deleteMe == True):
+                self.damageTextList.remove(dText)
         
 
     def makeANewEnemy(self, type, w, h, oneIn):
@@ -55,16 +68,14 @@ class EnemyWrangler:
                 elif (spawnSeed == 4):
                     x = w - 1
                     y = randint(1,h - 1)
-                self.enemyList.append(Enemy(x, y, 1+(self.stage-1)*self.enemySpeedMod, self.tileSize, pygame.Color(255,0,0), 1, 4, self.frameRate))
+                self.enemyList.append(Enemy(x, y, 1+(self.stage-1)*self.enemySpeedMod, self.tileSize, pygame.Color(255,0,0), 1, self.enemyBaseHP*self.stage, self.frameRate))
 
     def updateEnemies(self, screen, playerX, playerY):
 
         for enemy in self.enemyList:
             enemy.updateAndDrawEnemy(screen, playerX, playerY)
         
-        
-
-    def hurtEnemies(self, liveRounds):
+    def hurtEnemies(self, liveRounds, damage):
         for bullet in liveRounds:
             originX = bullet.posX + bullet.size/2
             originY = bullet.posY + bullet.size/2
@@ -73,9 +84,12 @@ class EnemyWrangler:
                 if(originX + bullet.size/2 > eman.posX and originX - bullet.size/2< eman.posX + eman.size):
                     if(originY + bullet.size/2> eman.posY and originY - bullet.size/2< eman.posY + eman.size):
                         bullet.remFlag = True
-                        self.enemyList.remove(eman)
-                        self.numOfEnemiesKilled += 1
-                        self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, 10*(self.stage*self.experienceStageMod), self.frameRate))
+                        eman.hp -= damage
+                        self.damageTextList.append(DamageText(eman.posX, eman.posY, self.damageTextSizeBase, pygame.Color(200,120,0), damage, self.frameRate))
+                        if (eman.hp <= 0):
+                            self.enemyList.remove(eman)
+                            self.numOfEnemiesKilled += 1
+                            self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, 10*(self.stage*self.experienceStageMod), self.frameRate))
 
     def hurtPlayer(self, pX, pY, pSize):
         for eman in self.enemyList:

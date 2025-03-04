@@ -163,10 +163,11 @@ class Variables:
 
         self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY)
         self.enemyWrangler.updateExperience(self.screen, self.background.tileSize, self.character.auraSpeed)
-        self.enemyWrangler.hurtEnemies(self.character.liveRounds)
+        self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
         
         self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
         self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize)
+        self.enemyWrangler.updateDamageTexts(self.screen, self.tileSizeGlobal)
 
         playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
 

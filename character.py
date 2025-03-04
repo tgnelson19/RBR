@@ -34,6 +34,7 @@ class Character:
         self.aura = 50
         self.auraSpeed = 4
         self.levelMod = 1.1
+        self.damage = 1
 
         self.currentLevel = 0
         self.expNeededForNextLevel = 50
@@ -58,6 +59,7 @@ class Character:
         self.bulletColor = pygame.Color(125,125,125)
         self.aura = self.tileSize*2
         self.auraSpeed = 4
+        self.damage = 1
 
     def levelUpStatsBasic(self):
 
@@ -75,6 +77,8 @@ class Character:
 
         if(self.currentLevel % self.multiBallLevelMod == 0):
             self.projectileCount += 1
+            
+        self.damage += 1
 
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
