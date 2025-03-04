@@ -30,6 +30,8 @@ class EnemyWrangler:
         
         self.enemyBaseHP = 5
 
+        self.enemyBaseExpValue = 10
+
         self.playerHit = False
 
         self.expCount = 0
@@ -71,7 +73,7 @@ class EnemyWrangler:
 
                 enemyRange = randint(5, 15) / 10 #Randomly generated enemies for each stage
 
-                self.enemyList.append(Enemy(x, y, (1+(self.stage-1)*self.enemySpeedMod) * enemyRange, int(self.tileSize / enemyRange), pygame.Color(255,0,0), (1+(self.stage-1)) / (enemyRange), (self.enemyBaseHP*self.stage) / (enemyRange), self.frameRate))
+                self.enemyList.append(Enemy(x, y, (1+(self.stage-1)*self.enemySpeedMod) * enemyRange, int(self.tileSize / enemyRange), pygame.Color(255,0,0), (1+(self.stage-1)) / (enemyRange), (self.enemyBaseHP*self.stage) / (enemyRange), (self.enemyBaseExpValue * (self.stage)) / enemyRange, self.frameRate))
 
     def updateEnemies(self, screen, playerX, playerY):
 
@@ -96,7 +98,7 @@ class EnemyWrangler:
                             if (eman.hp <= 0):
                                 self.enemyList.remove(eman)
                                 self.numOfEnemiesKilled += 1
-                                self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, 10*(self.stage*self.experienceStageMod), self.frameRate))
+                                self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, eman.expValue*(self.stage*self.experienceStageMod), self.frameRate))
 
     def hurtPlayer(self, pX, pY, pSize, pDefense):
         for eman in self.enemyList:

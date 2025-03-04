@@ -4,7 +4,7 @@ from bullet import Bullet
 
 class Enemy:
 
-    def __init__(self, posX, posY, speed, size, color, damage, hp, frameRate):
+    def __init__(self, posX, posY, speed, size, color, damage, hp, expValue, frameRate):
         self.posX = posX
         self.posY = posY
         self.speed = speed
@@ -15,6 +15,7 @@ class Enemy:
         self.direction = 0
         self.frameRate = frameRate
         self.cantTouchMeList = []
+        self.expValue = expValue
 
 
     def updateAndDrawEnemy(self, screen, playerX, playerY):

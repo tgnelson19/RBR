@@ -86,9 +86,9 @@ class Character:
         if(self.currentLevel % self.multiBallLevelMod == 0):
             self.projectileCount += 1
             
-        self.damage += 0.25
-        self.bulletPierce += 1
-        self.defense += 1
+        self.damage += 0.1
+        self.bulletPierce += 0
+        self.defense += 0
 
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):

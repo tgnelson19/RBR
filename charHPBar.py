@@ -21,5 +21,9 @@ class CharHPBar:
     def drawBar(self, screen, currPercentage):
         pygame.draw.rect(screen, self.outerBarColor, pygame.Rect(self.posX, self.sH - self.tileSize + self.posY, self.totalLength, self.totalHeight))
         pygame.draw.rect(screen, self.fakeInnerColor, pygame.Rect(self.posX + self.inDel, self.sH - self.tileSize + self.posY + self.inDel, self.totalLength - 2*self.inDel, self.totalHeight- 2*self.inDel))
+
+        if (currPercentage <= 0):
+            currPercentage =0
+            
         self.expColor = (int(255-255*(currPercentage)), int(255*(currPercentage)), 0)
         pygame.draw.rect(screen, pygame.Color(self.expColor), pygame.Rect(self.posX + self.inDel, self.sH - self.tileSize + self.posY + self.inDel, int(self.totalLength*(currPercentage)) - 2*self.inDel, self.totalHeight - 2*self.inDel))
