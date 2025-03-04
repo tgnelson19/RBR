@@ -17,8 +17,11 @@ class Enemy:
         self.cantTouchMeList = []
         self.expValue = expValue
 
+    def drawEnemy(self, screen):
+        pygame.draw.rect(screen, self.color, pygame.Rect(self.posX, self.posY, self.size, self.size))
 
-    def updateAndDrawEnemy(self, screen, playerX, playerY):
+
+    def updateEnemy(self, playerX, playerY):
         
         #Logic for a basic crawler enemy (All anyone wants to fight anyway these days, brainrot...)
         
@@ -50,5 +53,5 @@ class Enemy:
         self.posX -= self.speed*cos(self.direction) * (120/self.frameRate)
         self.posY -= self.speed*sin(self.direction) * (120/self.frameRate)
 
-        pygame.draw.rect(screen, self.color, pygame.Rect(self.posX, self.posY, self.size, self.size))
+        
 

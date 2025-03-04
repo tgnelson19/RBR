@@ -172,9 +172,9 @@ class Variables:
         else:
             self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
-        self.enemyWrangler.updateEnemies(self.screen, self.character.positionX, self.character.positionY)
+        
         self.enemyWrangler.updateExperience(self.screen, self.background.tileSize, self.character.auraSpeed)
-        self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
+        
         
         self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
         newDamage = self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.defense)
@@ -202,14 +202,22 @@ class Variables:
         
         if (self.enemyWrangler.numOfEnemiesKilled >= self.numKilledNeeded):
             self.background.openDoors()
-        elif(self.enemiesEnabled and self.gracePeriod == 0):
+            if(self.gracePeriod <= 0):
+                self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
+                self.enemyWrangler.updateEnemies(self.character.positionX, self.character.positionY)
+        elif(self.enemiesEnabled and self.gracePeriod <= 0):
+            self.enemyWrangler.updateEnemies(self.character.positionX, self.character.positionY)
             self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, self.oneInChance)
-        else:
+            self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
+        if(self.gracePeriod > 0):
             self.gracePeriod -= 1
+
+        self.enemyWrangler.drawEnemies(self.screen)
 
         if (playerDecision != "no"):
 
             self.gracePeriod = self.gracePeriodStart
+            self.character.healthPoints = self.character.maxHealthPoints
 
             self.background.makeDefaultRoom()
             self.character.newNoNoZone(self.background.currentLayout, self.background.tileSize)
@@ -369,6 +377,7 @@ class Variables:
         if (pDecision != "none"):
             self.character.combarinoPlayerStats()
             self.newRandoUps = False
+            self.gracePeriod = self.frameRate * 2
             self.state = "gameRun"
 
         pygame.display.flip()  # Displays currently drawn frame

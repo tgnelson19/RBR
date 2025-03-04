@@ -20,7 +20,9 @@ class EnemyWrangler:
 
         self.stage = 1
 
-        self.enemySpeedMod = 1.2
+        self.difficulty = .75 #Lower values makes an easier difficulty between 0-1
+
+        self.enemySpeedMod = 1.02
 
         self.experienceStageMod = 1.1
 
@@ -71,14 +73,23 @@ class EnemyWrangler:
                     x = w - 1
                     y = randint(1,h - 1)
 
-                enemyRange = randint(5, 15) / 10 #Randomly generated enemies for each stage
+                enemyRange = randint(2, 15) / 10 #Randomly generated enemies for each stage
 
-                self.enemyList.append(Enemy(x, y, (1+(self.stage-1)*self.enemySpeedMod) * enemyRange, int(self.tileSize / enemyRange), pygame.Color(255,0,0), (1+(self.stage-1)) / (enemyRange), (self.enemyBaseHP*self.stage) / (enemyRange), (self.enemyBaseExpValue * (self.stage)) / enemyRange, self.frameRate))
+                self.enemyList.append(Enemy(x, y, (1+(self.stage-1)*self.enemySpeedMod) * (enemyRange/2), 
+                                            int(self.tileSize / enemyRange), pygame.Color(255,0,0), 
+                                            self.difficulty*((1+(self.stage-1)) / (enemyRange)), 
+                                            (self.enemyBaseHP*self.stage) / (enemyRange),
+                                            (self.enemyBaseExpValue * (self.stage)) / enemyRange, 
+                                            self.frameRate))
 
-    def updateEnemies(self, screen, playerX, playerY):
+    def updateEnemies(self, playerX, playerY):
 
         for enemy in self.enemyList:
-            enemy.updateAndDrawEnemy(screen, playerX, playerY)
+            enemy.updateEnemy( playerX, playerY)
+    
+    def drawEnemies(self, screen):
+        for enemy in self.enemyList:
+            enemy.drawEnemy(screen)
         
     def hurtEnemies(self, liveRounds, damage):
         for bullet in liveRounds:
@@ -106,6 +117,7 @@ class EnemyWrangler:
                 if(pY + pSize > eman.posY and pY < eman.posY + eman.size):
                     self.playerHit = True
                     self.enemyList.remove(eman)
+                    self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, eman.expValue*(self.stage*self.experienceStageMod), self.frameRate))
                     trueDMG = eman.damage - pDefense
                     if (trueDMG < 0):
                         trueDMG = 0

@@ -25,22 +25,30 @@ class LevelingHandler:
         self.midCard = pygame.Rect(self.tileSize * 3 + cardWidth, self.tileSize * 3, cardWidth, cardHeight)
         self.rightCard = pygame.Rect(self.tileSize * 4 + 2*cardWidth, self.tileSize * 3, cardWidth, cardHeight)
 
-        self.upgradeRarity = {"Common" : 1, "Rare" : 1.5, "Epic" : 2, "Legendary" : 3, "Mythical" : 5}
+        
         self.upgradeRarityColors = {"Common" : pygame.Color(0,0,0), "Rare" : pygame.Color(0,0,200), "Epic" : pygame.Color(128,0,128), "Legendary" : pygame.Color(255, 215, 0), "Mythical" : pygame.Color(255,255,255)}
+
+        #Chance of rarity being dropped (one in #)
         self.upgradeRarityChancesOneIn = {"Common" : 1, "Rare" : 4, "Epic" : 10, "Legendary" : 25, "Mythical" : 100}
+        
+        #Rarity multiplier for the upgrade's value
+        self.upgradeRarity = {"Common" : 1, "Rare" : 2, "Epic" : 3, "Legendary" : 5, "Mythical" : 10}
+
         self.upgradeRarityListReversed = ["Mythical", "Legendary", "Epic", "Rare", "Common"]
         self.upgradeBasicsMaths = {"addative" : "Addatively", "multiplicative" : "Multiplicatively"}
 
         self.upgradeTypesList = ["Defense", "Bullet Pierce", "Bullet Count", "Spread Angle", 
                                   "Attack Speed", "Bullet Speed", "Bullet Range", "Bullet Damage", 
                                   "Bullet Size", "Player Speed" ]
+        
+        #Base values for upgrades at common
 
         self.upgradeBasicTypesAdd = {"Defense" : 0.25, "Bullet Pierce" : 0.25, "Bullet Count" : 0.25, "Spread Angle" : pi/8, 
-                                  "Attack Speed" : 1, "Bullet Speed" : 2, "Bullet Range" : 50, "Bullet Damage" : 0.25, 
+                                  "Attack Speed" : -1, "Bullet Speed" : 2, "Bullet Range" : 50, "Bullet Damage" : 0.25, 
                                   "Bullet Size" : 5, "Player Speed" : 0.25}
         
         self.upgradeBasicTypesMult = {"Defense" : 0.1, "Bullet Pierce" : 0.1, "Bullet Count" : 0.1, "Spread Angle" : 0.1, 
-                                  "Attack Speed" : 0.1, "Bullet Speed" : 0.1, "Bullet Range" : 0.1, "Bullet Damage" : 0.1, 
+                                  "Attack Speed" : -0.1, "Bullet Speed" : 0.1, "Bullet Range" : 0.1, "Bullet Damage" : 0.1, 
                                   "Bullet Size" : 0.1, "Player Speed" : 0.1}
         
         self.upgradeBasicTypesMapper = {"Defense" : "defense", "Bullet Pierce" : "bulletPierce", "Bullet Count" : "projectileCount", "Spread Angle" : "azimuthalProjectileAngle", 

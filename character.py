@@ -1,8 +1,9 @@
 import pygame
-from math import floor, ceil, atan, pi
+from math import floor, ceil, atan, pi, trunc
 from bullet import Bullet
 from levelBar import LevelBar
 from charHPBar import CharHPBar
+from random import randint
 
 class Character:
 
@@ -105,6 +106,7 @@ class Character:
         self.azimuthalProjectileAngle = (self.collectiveStats["Spread Angle"] + sum(self.collectiveAddStats["Spread Angle"])) * (self.multiply_list(self.collectiveMultStats["Spread Angle"]))
         self.playerSpeed = (self.collectiveStats["Player Speed"] + sum(self.collectiveAddStats["Player Speed"])) * (self.multiply_list(self.collectiveMultStats["Player Speed"]))
         self.attackCooldownStat = (self.collectiveStats["Attack Speed"] + sum(self.collectiveAddStats["Attack Speed"])) * (self.multiply_list(self.collectiveMultStats["Attack Speed"]))
+        if(self.attackCooldownStat <= 1): self.attackCooldownStat = 1
         self.bulletSpeed = (self.collectiveStats["Bullet Speed"] + sum(self.collectiveAddStats["Bullet Speed"])) * (self.multiply_list(self.collectiveMultStats["Bullet Speed"]))
         self.bulletRange = (self.collectiveStats["Bullet Range"] + sum(self.collectiveAddStats["Bullet Range"])) * (self.multiply_list(self.collectiveMultStats["Bullet Range"]))
         self.bulletSize = (self.collectiveStats["Bullet Size"] + sum(self.collectiveAddStats["Bullet Size"])) * (self.multiply_list(self.collectiveMultStats["Bullet Size"]))
@@ -138,9 +140,16 @@ class Character:
 
         if (self.attackCooldownTimer <= 0 and mouseDown):
 
+            currProjectileCount = floor(self.projectileCount)
+
             self.attackCooldownTimer = self.attackCooldownStat
 
-            for bNum in range(0,int(self.projectileCount)):
+            chance = randint(1, 100)
+
+            if (chance <= 100*(self.projectileCount - trunc(self.projectileCount))):
+                currProjectileCount = floor(self.projectileCount) + 1
+
+            for bNum in range(0,int(currProjectileCount)):
                 
                 originX = self.positionX + (self.playerSize / 2)
                 originY = self.positionY + (self.playerSize / 2)
@@ -165,11 +174,11 @@ class Character:
 
                         direction = atan(deltaY/deltaX) + pi
 
-                if(self.projectileCount != 1):
+                if(currProjectileCount != 1):
 
                     dirDelta = -(self.azimuthalProjectileAngle / 2)
 
-                    direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (self.projectileCount-1))
+                    direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (currProjectileCount-1))
 
                 self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, self.bulletPierce, self.sW, self.sH, self.frameRate))
 
