@@ -324,9 +324,11 @@ class Variables:
 
         self.clock.tick(self.frameRate)  # Keeps program to only 120 frames per second
         self.mouseX, self.mouseY = pygame.mouse.get_pos() # Saves current mouse position
+        
 
         if (not self.newRandoUps):
             self.levelingHandler.randomizeLevelUp()
+            self.keysDown = [False, False, False, False]
             self.newRandoUps = True
 
         for event in pygame.event.get():  # Main event handler
@@ -366,6 +368,7 @@ class Variables:
 
         if (pDecision != "none"):
             self.character.combarinoPlayerStats()
+            self.newRandoUps = False
             self.state = "gameRun"
 
         pygame.display.flip()  # Displays currently drawn frame

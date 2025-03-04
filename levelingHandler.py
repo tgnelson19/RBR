@@ -155,12 +155,15 @@ class LevelingHandler:
         if (mouseDown and not self.firstClick):
             if(mouseX < self.leftCard.right and mouseX > self.leftCard.left):
                 if(mouseY < self.leftCard.bottom and mouseY > self.leftCard.top):
+                    self.firstClick = True
                     return "leftCard"
             if(mouseX < self.midCard.right and mouseX > self.midCard.left):
                 if(mouseY < self.midCard.bottom and mouseY > self.midCard.top):
+                    self.firstClick = True
                     return "midCard"
             if(mouseX < self.rightCard.right and mouseX > self.rightCard.left):
                 if(mouseY < self.rightCard.bottom and mouseY > self.rightCard.top):
+                    self.firstClick = True
                     return "rightCard"
         else:
             return "none"

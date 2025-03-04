@@ -140,7 +140,7 @@ class Character:
 
             self.attackCooldownTimer = self.attackCooldownStat
 
-            for bNum in range(0,self.projectileCount):
+            for bNum in range(0,int(self.projectileCount)):
                 
                 originX = self.positionX + (self.playerSize / 2)
                 originY = self.positionY + (self.playerSize / 2)
