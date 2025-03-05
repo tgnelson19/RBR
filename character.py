@@ -5,6 +5,7 @@ from levelBar import LevelBar
 from charHPBar import CharHPBar
 from random import randint
 
+#Holds ALL OF THE CHARACTER VARIABLES AND IS VERY IMPORTANT
 class Character:
 
     def __init__(self, defX, defY, tileSize, numTX, numTY, sW, sH, frameRate):

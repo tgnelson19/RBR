@@ -1,5 +1,6 @@
 import pygame
 
+#Simple text that floats above the target with a certain value
 class DamageText:
 
     def __init__(self, entX, entY, textBaseSize, color, value, objSize, framerate):

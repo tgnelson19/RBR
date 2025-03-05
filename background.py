@@ -1,5 +1,6 @@
 import pygame
 
+#Generates a giant 2D list that can be displayed to the screen 
 class Background:
 
     def __init__(self, w, h, tileSize, bckColor):

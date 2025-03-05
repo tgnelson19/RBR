@@ -2,6 +2,7 @@ import pygame
 from math import pi, atan, cos, sin
 from bullet import Bullet
 
+#Collects basic enemy variables that are used for game calculations
 class Enemy:
 
     def __init__(self, posX, posY, speed, size, color, damage, hp, expValue, frameRate):

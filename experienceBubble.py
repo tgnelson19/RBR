@@ -2,6 +2,7 @@ from random import randint
 from math import cos, sin, floor, ceil
 import pygame
 
+#Lil' bubble that chases player when in aura and helps level up
 class ExperienceBubble:    
     def __init__(self, oX, oY, value, frameRate):
         self.size = 20

@@ -6,6 +6,7 @@ from experienceBubble import ExperienceBubble
 from math import atan, pi
 from damageText import DamageText
 
+#Wrangles the enemies and exp bubbles and damage texts (Pretty simple in concept)
 class EnemyWrangler:    
     def __init__(self, tileSize, frameRate):
         self.enemyList = []

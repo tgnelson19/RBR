@@ -1,5 +1,6 @@
 import pygame
 
+#Basic stats used to draw a HP bar in the bottom right corner
 class CharHPBar:
 
     def __init__(self, sW, sH, tileSize):

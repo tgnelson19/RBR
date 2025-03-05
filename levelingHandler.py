@@ -2,7 +2,7 @@ import pygame
 from math import pi
 from random import randint
 
-
+#Whacko sicko mode hardcode that controls the leveling up schema
 class LevelingHandler:    
     def __init__(self, tileSize, frameRate, cardColor, sW, sH):
         self.tileSize = tileSize

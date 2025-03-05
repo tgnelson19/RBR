@@ -1,6 +1,7 @@
 import pygame
 from math import sin, cos, sqrt
 
+#Handles basic bullet statistics used during game calculation
 class Bullet:
 
     def __init__(self, pX, pY, speed, direc, bRange, size, color, pierce, sW, sH, frameRate):

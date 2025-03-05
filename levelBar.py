@@ -1,5 +1,6 @@
 import pygame
 
+#When reaches full, give a level, located in top right corner
 class LevelBar:
 
     def __init__(self, sW, sH, tileSize):

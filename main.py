@@ -4,11 +4,14 @@ vars = Variables()  # Variable Holster Object
 
 while not vars.done:  # Loop to render each frame
 
+    #This state is the title screen
     if vars.state == "titleScreen":
         vars.doTheTitleScreen()
 
-    elif vars.state == "gameRun":
-        vars.doAnUpdate()  # Main function that collects event data, and paints the current frame to the screen
+    #This state is when the game runs
+    elif vars.state == "gameRun": 
+        vars.doAnUpdate()  
 
+    #This state is when the player reaches a level up
     elif vars.state == "leveling":
         vars.LevelingLogic()
