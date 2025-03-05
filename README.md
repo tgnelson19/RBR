@@ -1,5 +1,5 @@
 # Welcome to RotBoiRemastered! (RBR)
-#This is a completely Open Source project, do whatever you want with it to your hearts content.
+This is a completely Open Source project, do whatever you want with it to your hearts content.
 
 Core components of this game include...
 -Absolutely Nothing
