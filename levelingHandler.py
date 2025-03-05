@@ -43,13 +43,13 @@ class LevelingHandler:
         
         #Base values for upgrades at common
 
-        self.upgradeBasicTypesAdd = {"Defense" : 1, "Bullet Pierce" : 0.25, "Bullet Count" : 0.25, "Spread Angle" : format(pi/8, '.3g'), 
-                                  "Attack Speed" : -1, "Bullet Speed" : 2, "Bullet Range" : 50, "Bullet Damage" : 0.25, 
+        self.upgradeBasicTypesAdd = {"Defense" : 1, "Bullet Pierce" : 0.25, "Bullet Count" : 0.25, "Spread Angle" : pi/8, 
+                                  "Attack Speed" : -1, "Bullet Speed" : 4, "Bullet Range" : 100, "Bullet Damage" : 0.25, 
                                   "Bullet Size" : 5, "Player Speed" : 0.25}
         
-        self.upgradeBasicTypesMult = {"Defense" : 0.1, "Bullet Pierce" : 0.1, "Bullet Count" : 0.1, "Spread Angle" : 0.1, 
-                                  "Attack Speed" : -0.05, "Bullet Speed" : 0.1, "Bullet Range" : 0.1, "Bullet Damage" : 0.1, 
-                                  "Bullet Size" : 0.1, "Player Speed" : 0.1}
+        self.upgradeBasicTypesMult = {"Defense" : 0.2, "Bullet Pierce" : 0.2, "Bullet Count" : 0.2, "Spread Angle" : 0.2, 
+                                  "Attack Speed" : -0.05, "Bullet Speed" : 0.5, "Bullet Range" : 0.5, "Bullet Damage" : 0.2, 
+                                  "Bullet Size" : 0.2, "Player Speed" : 0.1}
         
         self.upgradeBasicTypesMapper = {"Defense" : "defense", "Bullet Pierce" : "bulletPierce", "Bullet Count" : "projectileCount", "Spread Angle" : "azimuthalProjectileAngle", 
                                   "Attack Speed" : "attackCooldownStat", "Bullet Speed" : "bulletSpeed", "Bullet Range" : "bulletRange", "Bullet Damage" : "damage", 
@@ -98,7 +98,7 @@ class LevelingHandler:
         textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*15))
         screen.blit(textRender, textRect)
         if self.leftCardUpgradeMath == "addative":
-            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.leftCardUpgradeType]* self.upgradeRarity[self.leftCardUpgradeRarity], '.3g')), True, self.baseColor)
+            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.leftCardUpgradeType]*self.upgradeRarity[self.leftCardUpgradeRarity], '.3g')), True, self.baseColor)
             textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*16))
             screen.blit(textRender, textRect)
         elif self.leftCardUpgradeMath == "multiplicative":
