@@ -1,5 +1,5 @@
 import pygame
-from math import sin, cos, sqrt
+from math import sin, cos, sqrt, degrees
 
 #Handles basic bullet statistics used during game calculation
 class Bullet:
@@ -23,6 +23,15 @@ class Bullet:
         self.currCrit = currCrit
 
 
+        # 1) Load your custom image
+        #    Make sure "my_bullet.png" is in the correct folder (or provide a full path).
+        #    convert_alpha() helps maintain transparency if the image has an alpha channel.
+        self.bullet_image = pygame.image.load("assets/projectile-png.png").convert_alpha()
+
+        # 2) Optionally, scale it to match your bullet size if needed
+        #    e.g. transform.scale to (width, height). If your bullet is square, do (size, size):
+        self.bullet_image = pygame.transform.scale(self.bullet_image, (int(self.size), int(self.size)))
+
     def updateAndDrawBullet(self, screen):
 
         self.posX = self.posX + (self.speed*cos(self.direc)) * (120/self.frameRate)
@@ -41,7 +50,21 @@ class Bullet:
             self.posY = 1
             self.remFlag = True
 
-        pygame.draw.rect(screen, self.color, pygame.Rect(self.posX, self.posY, self.size, self.size))
+        #pygame.draw.rect(screen, self.color, pygame.Rect(self.posX, self.posY, self.size, self.size))
 
-        if(sqrt((abs(self.posX - self.iPosX) ** 2) + (abs(self.posY - self.iPosY) ** 2)) >= self.bRange): 
+        angle_deg = degrees(self.direc)  # or with some + offset
+        rotated_image = pygame.transform.rotate(self.bullet_image, angle_deg)
+
+        # Create a rect so the center is at (posX, posY)
+        rotated_rect = rotated_image.get_rect(center=(self.posX+self.size/2, self.posY +self.size/2))
+
+        # Now blit so the bullet’s center remains at self.posX, self.posY
+        screen.blit(rotated_image, rotated_rect)
+
+
+        #if(sqrt((abs(self.posX - self.iPosX) ** 2) + (abs(self.posY - self.iPosY) ** 2)) >= self.bRange): 
+        
+        # 2) Check bullet travel distance
+        dist_traveled = sqrt((self.posX - self.iPosX) ** 2 + (self.posY - self.iPosY) ** 2)
+        if dist_traveled >= self.bRange:
             self.remFlag = True

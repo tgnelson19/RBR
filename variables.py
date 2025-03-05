@@ -4,6 +4,7 @@ from character import Character
 from background import Background
 from enemyWrangler import EnemyWrangler
 from levelingHandler import LevelingHandler
+from stat_block import statBlock
 
 class Variables:
 
@@ -48,7 +49,7 @@ class Variables:
         self.mouseX, self.mouseY = 0,0
 
         #List of W,A,S,D movement by the player
-        self.keysDown = [False, False, False, False]
+        #self.keysDown = [False, False, False, False] This line is not necessary because you already establish self.keysDown in the title
 
         #Initialize the character object that holds all of the core character statistics/updating/handling
         self.character = Character(self.sW / 2, self.sH / 2, self.tileSizeGlobal, self.numTX, self.numTY, self.sW, self.sH, self.frameRate)
@@ -87,6 +88,25 @@ class Variables:
         #Weird variables used for debugging / QOL
         self.enemiesEnabled = True
         self.autoFire = False
+
+        #Statblock variables
+        statBlockWidth = self.sW/2
+        statBlockHeight = self.sH/2
+        self.stat_block_visible = False
+        myStats = {
+            "HP" : self.character.maxHealthPoints,
+            "Damage" : self.character.damage,
+            "Defense" : self.character.defense,
+            "Crit %" : self.character.critChance,
+            "Crit Damage" : self.character.critDamage,
+            "Attack Speed" : self.character.attackCooldownStat,
+            "Range" : self.character.bulletRange,
+            "Projectiles" : self.character.projectileCount
+        }
+        self.statBlock = statBlock((self.sW/2)-(statBlockWidth/2),(self.sH/2)-(statBlockHeight/2),statBlockWidth,statBlockHeight,pygame.Color(128,128,128),pygame.Color(255,255,255),self.fontSize,stats=myStats)
+        self.statBlock.drawStatblock(self.screen)
+
+        
         
         
     #Completely cleans everything at title screen (Needs to be optimized for no wasted operations/resets)
@@ -147,6 +167,7 @@ class Variables:
                         self.darkLightMode = True
                         self.backgroundColor = self.darkColor
                         self.textColor = self.lightColor
+                
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.mouseDown = True
@@ -174,12 +195,6 @@ class Variables:
     # Put functions to do things here (Main chunks of code)
 
         self.background.displayCurrentDefaults(self.screen, self.backgroundColor) #Displays background tiles
-
-        #Autofire logic
-        if (self.autoFire):
-            self.character.handlingBullets(self.screen, True, self.mouseX, self.mouseY)
-        else:
-            self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
         #Updates experience bubbles on screen first
         self.enemyWrangler.updateExperience(self.screen, self.background.tileSize, self.character.auraSpeed)
@@ -209,8 +224,22 @@ class Variables:
         #Draws the texts that are on top of the walls etc...
         self.displayMiscStats()
 
+        #================================================#
+        realKeys = self.keysDown[:]                      #
+        if self.stat_block_visible:                      #
+            moveKeys = [False, False, False, False]
+            self.mouseDown = False      # This section is necessary to prevent movement while the statblock is present
+        else:                                            #
+            moveKeys = realKeys                          #
+        #================================================#
         #Moves and draws the player, determines if the player has entered a door and returns direction
-        playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
+        playerDecision = self.character.moveAndDrawPlayer(self.screen, moveKeys) # Moves player around the screen based on moveKeys
+
+        #Autofire logic
+        if (self.autoFire and not self.stat_block_visible):
+            self.character.handlingBullets(self.screen, True, self.mouseX, self.mouseY)
+        else:
+            self.character.handlingBullets(self.screen, self.mouseDown, self.mouseX, self.mouseY)
 
         #Determines how much exp the character has and if a level up is warrented
         tempExpHold = self.character.shareExpAndHP(self.screen, self.enemyWrangler.expCount)
@@ -271,6 +300,27 @@ class Variables:
             elif (playerDecision == "top"):
                 self.character.positionX = (self.sW / 2) - (self.background.tileSize / 2)
                 self.character.positionY = self.sH - (self.background.tileSize*2 + 5)
+        
+        #Statblock toggle and update
+        if(self.stat_block_visible):
+            self.gracePeriod = 1
+            self.statBlock.stats["HP"] = self.character.maxHealthPoints
+            self.statBlock.stats["Damage"] = float(int(self.character.damage*100)/100)
+            self.statBlock.stats["Defense"] = float(int(self.character.defense*100)/100)
+            self.statBlock.stats["Projectiles"] = float(int(self.character.projectileCount*100)/100)
+            self.statBlock.stats["Crit %"] = int(self.character.critChance *100)
+            self.statBlock.stats["Crit Damage"] = float(int(self.character.critDamage*100)/100)
+            self.statBlock.stats["Attack Speed"] = float(int(self.character.attackCooldownStat*100)/100)
+            self.statBlock.stats["Range"] = self.character.bulletRange
+            self.statBlock.drawStatblock(self.screen)
+        
+            
+            
+            
+
+            
+
+
 
     ##########################################################################################################
 
@@ -342,6 +392,10 @@ class Variables:
                         self.darkLightMode = True
                         self.backgroundColor = self.darkColor
                         self.textColor = self.lightColor
+                
+                #Statblock display
+                if event.key == pygame.K_F1:
+                    self.stat_block_visible = not self.stat_block_visible
 
             #Ending player movement
             if event.type == pygame.KEYUP:
