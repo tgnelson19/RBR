@@ -149,6 +149,13 @@ class Character:
             if (chance <= 100*(self.projectileCount - trunc(self.projectileCount))):
                 currProjectileCount = floor(self.projectileCount) + 1
 
+            currPierce = floor(self.bulletPierce)
+
+            chance = randint(1, 100)
+
+            if (chance <= 100*(self.bulletPierce - trunc(self.bulletPierce))):
+                currPierce = floor(self.bulletPierce) + 1
+
             for bNum in range(0,int(currProjectileCount)):
                 
                 originX = self.positionX + (self.playerSize / 2)
@@ -180,7 +187,7 @@ class Character:
 
                     direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (currProjectileCount-1))
 
-                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, self.bulletPierce, self.sW, self.sH, self.frameRate))
+                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, currPierce, self.sW, self.sH, self.frameRate))
 
         elif(self.attackCooldownTimer > 0):
             self.attackCooldownTimer -= 1 * (120/self.frameRate)
