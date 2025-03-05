@@ -1,4 +1,15 @@
-# Welcome to RBR
-This is a test on whether or not I can share my pet projects with others
+# Welcome to RotBoiRemastered! (RBR)
+#This is a completely Open Source project, do whatever you want with it to your hearts content.
 
-To play the initial version of the game, download the dist folder to your computer, ensure you have python installed, and hopefully the game should run (If not, let me know)
+Core components of this game include...
+-Absolutely Nothing
+-More Nothing
+-Literally Nothing
+
+
+
+
+
+In all seriousness, this game is horribly developed and simply a proof of concepts. There are plenty of inefficiencies, but the point of this program is to show that there
+are plenty of oppertunities with simple libraries to build something far greater. There is not much to this program, but if you look around at it you will see that it holds
+plenty of oppertunity. Play it a bit and try things out, see how it feels, make it your own. I literally do not care.
