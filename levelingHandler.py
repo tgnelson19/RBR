@@ -48,7 +48,7 @@ class LevelingHandler:
                                   "Bullet Size" : 5, "Player Speed" : 0.25}
         
         self.upgradeBasicTypesMult = {"Defense" : 0.1, "Bullet Pierce" : 0.1, "Bullet Count" : 0.1, "Spread Angle" : 0.1, 
-                                  "Attack Speed" : -0.1, "Bullet Speed" : 0.1, "Bullet Range" : 0.1, "Bullet Damage" : 0.1, 
+                                  "Attack Speed" : -0.05, "Bullet Speed" : 0.1, "Bullet Range" : 0.1, "Bullet Damage" : 0.1, 
                                   "Bullet Size" : 0.1, "Player Speed" : 0.1}
         
         self.upgradeBasicTypesMapper = {"Defense" : "defense", "Bullet Pierce" : "bulletPierce", "Bullet Count" : "projectileCount", "Spread Angle" : "azimuthalProjectileAngle", 
