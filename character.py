@@ -42,6 +42,8 @@ class Character:
         self.maxHealthPoints = 10
         self.bulletPierce = 1
         self.defense = 0
+        self.critChance = 0.05
+        self.critDamage = 2
 
         self.currentLevel = 0
         self.expNeededForNextLevel = 50
@@ -52,15 +54,15 @@ class Character:
 
         self.collectiveStats = {"Defense" : self.defense, "Bullet Pierce" : self.bulletPierce, "Bullet Count" : self.projectileCount, "Spread Angle" : self.azimuthalProjectileAngle, 
                                   "Attack Speed" : self.attackCooldownStat, "Bullet Speed" : self.bulletSpeed, "Bullet Range" : self.bulletRange, "Bullet Damage" : self.damage, 
-                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed}
+                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed, "Crit Chance" : self.critChance, "Crit Damage" : self.critDamage}
         
         self.collectiveAddStats = {"Defense" : [0], "Bullet Pierce" : [0], "Bullet Count" : [0], "Spread Angle" : [0], 
                                   "Attack Speed" : [0], "Bullet Speed" : [0], "Bullet Range" : [0], "Bullet Damage" : [0], 
-                                  "Bullet Size" : [0], "Player Speed" : [0]}
+                                  "Bullet Size" : [0], "Player Speed" : [0], "Crit Chance": [0], "Crit Damage": [0]}
         
         self.collectiveMultStats = {"Defense" : [1], "Bullet Pierce" : [1], "Bullet Count" : [1], "Spread Angle" : [1], 
                                   "Attack Speed" : [1], "Bullet Speed" : [1], "Bullet Range" : [1], "Bullet Damage" : [1], 
-                                  "Bullet Size" : [1], "Player Speed" : [1]}
+                                  "Bullet Size" : [1], "Player Speed" : [1], "Crit Chance": [1], "Crit Damage": [1]}
 
     def newNoNoZone(self, noNoZone, tileSize):
         self.noNoZone = noNoZone
@@ -89,18 +91,20 @@ class Character:
         self.healthPoints = 10
         self.bulletPierce = 1
         self.defense = 0
+        self.critChance = 0.05
+        self.critDamage = 2
 
         self.collectiveStats = {"Defense" : self.defense, "Bullet Pierce" : self.bulletPierce, "Bullet Count" : self.projectileCount, "Spread Angle" : self.azimuthalProjectileAngle, 
                                   "Attack Speed" : self.attackCooldownStat, "Bullet Speed" : self.bulletSpeed, "Bullet Range" : self.bulletRange, "Bullet Damage" : self.damage, 
-                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed}
+                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed, "Crit Chance" : self.critChance, "Crit Damage" : self.critDamage}
         
         self.collectiveAddStats = {"Defense" : [0], "Bullet Pierce" : [0], "Bullet Count" : [0], "Spread Angle" : [0], 
                                   "Attack Speed" : [0], "Bullet Speed" : [0], "Bullet Range" : [0], "Bullet Damage" : [0], 
-                                  "Bullet Size" : [0], "Player Speed" : [0]}
+                                  "Bullet Size" : [0], "Player Speed" : [0], "Crit Chance": [0], "Crit Damage": [0]}
         
         self.collectiveMultStats = {"Defense" : [1], "Bullet Pierce" : [1], "Bullet Count" : [1], "Spread Angle" : [1], 
                                   "Attack Speed" : [1], "Bullet Speed" : [1], "Bullet Range" : [1], "Bullet Damage" : [1], 
-                                  "Bullet Size" : [1], "Player Speed" : [1]}
+                                  "Bullet Size" : [1], "Player Speed" : [1], "Crit Chance": [1], "Crit Damage": [1]}
 
     def combarinoPlayerStats(self):
         self.projectileCount = (self.collectiveStats["Bullet Count"] + sum(self.collectiveAddStats["Bullet Count"])) * (self.multiply_list(self.collectiveMultStats["Bullet Count"]))
@@ -114,6 +118,8 @@ class Character:
         self.damage = (self.collectiveStats["Bullet Damage"] + sum(self.collectiveAddStats["Bullet Damage"])) * (self.multiply_list(self.collectiveMultStats["Bullet Damage"]))
         self.bulletPierce = (self.collectiveStats["Bullet Pierce"] + sum(self.collectiveAddStats["Bullet Pierce"])) * (self.multiply_list(self.collectiveMultStats["Bullet Pierce"]))
         self.defense = (self.collectiveStats["Defense"] + sum(self.collectiveAddStats["Defense"])) * (self.multiply_list(self.collectiveMultStats["Defense"]))
+        self.critChance = (self.collectiveStats["Crit Chance"] + sum(self.collectiveAddStats["Crit Chance"])) * (self.multiply_list(self.collectiveMultStats["Crit Chance"]))
+        self.critDamage = (self.collectiveStats["Crit Damage"] + sum(self.collectiveAddStats["Crit Damage"])) * (self.multiply_list(self.collectiveMultStats["Crit Damage"]))
 
     # def levelUpStatsBasic(self):
 
@@ -140,6 +146,18 @@ class Character:
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
 
         if (self.attackCooldownTimer <= 0 and mouseDown):
+
+            currCritChance = floor(self.critChance)
+
+            chance = randint(1, 100)
+
+            currCrit = False
+
+            if (chance <= 100*(self.critChance - trunc(self.critChance))):
+                currCrit = True
+                currCritChance = floor(self.critChance) + 1
+
+            currDamage = self.damage * (self.critDamage **(currCritChance))
 
             currProjectileCount = floor(self.projectileCount)
 
@@ -188,7 +206,7 @@ class Character:
 
                     direction += dirDelta + bNum*(self.azimuthalProjectileAngle / (currProjectileCount-1))
 
-                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, currPierce, self.sW, self.sH, self.frameRate))
+                self.liveRounds.append(Bullet(originX - (self.bulletSize / 2), originY - (self.bulletSize / 2), self.bulletSpeed, direction, self.bulletRange, self.bulletSize, self.bulletColor, currPierce, currDamage, currCrit, self.sW, self.sH, self.frameRate))
 
         elif(self.attackCooldownTimer > 0):
             self.attackCooldownTimer -= 1 * (120/self.frameRate)

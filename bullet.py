@@ -4,7 +4,7 @@ from math import sin, cos, sqrt
 #Handles basic bullet statistics used during game calculation
 class Bullet:
 
-    def __init__(self, pX, pY, speed, direc, bRange, size, color, pierce, sW, sH, frameRate):
+    def __init__(self, pX, pY, speed, direc, bRange, size, color, pierce, damage, currCrit, sW, sH, frameRate):
         self.posX = pX
         self.posY = pY
         self.iPosX = pX
@@ -19,6 +19,8 @@ class Bullet:
         self.bPierce = pierce
         self.remFlag = False
         self.frameRate = frameRate
+        self.damage = damage
+        self.currCrit = currCrit
 
 
     def updateAndDrawBullet(self, screen):

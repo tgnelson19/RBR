@@ -94,12 +94,11 @@ class EnemyWrangler:
         for enemy in self.enemyList:
             enemy.drawEnemy(screen)
         
-    def hurtEnemies(self, liveRounds, damage):
+    def hurtEnemies(self, liveRounds):
         for bullet in liveRounds:
             originX = bullet.posX + bullet.size/2
             originY = bullet.posY + bullet.size/2
             for eman in self.enemyList:
-
                 if(originX + bullet.size/2 > eman.posX and originX - bullet.size/2< eman.posX + eman.size):
                     if(originY + bullet.size/2> eman.posY and originY - bullet.size/2< eman.posY + eman.size):
                         if (bullet not in eman.cantTouchMeList):
@@ -107,8 +106,12 @@ class EnemyWrangler:
                             bullet.bPierce -= 1
                             if (bullet.bPierce <= 0):
                                 bullet.remFlag = True
-                            eman.hp -= damage
-                            self.damageTextList.append(DamageText(eman.posX, eman.posY, self.damageTextSizeBase, pygame.Color(200,120,0), damage, eman.size, self.frameRate))
+                            eman.hp -= bullet.damage
+                            if(bullet.currCrit):
+                                currColor = pygame.Color(128,0,128)
+                            else:
+                                currColor = pygame.Color(200,120,0)
+                            self.damageTextList.append(DamageText(eman.posX, eman.posY, self.damageTextSizeBase, currColor, bullet.damage, eman.size, self.frameRate))
                             if (eman.hp <= 0):
                                 self.enemyList.remove(eman)
                                 self.numOfEnemiesKilled += 1

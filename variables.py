@@ -225,12 +225,12 @@ class Variables:
         if (self.enemyWrangler.numOfEnemiesKilled >= self.numKilledNeeded):
             self.background.openDoors()
             if(self.gracePeriod <= 0):
-                self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
+                self.enemyWrangler.hurtEnemies(self.character.liveRounds)
                 self.enemyWrangler.updateEnemies(self.character.positionX, self.character.positionY)
         elif(self.enemiesEnabled and self.gracePeriod <= 0):
             self.enemyWrangler.updateEnemies(self.character.positionX, self.character.positionY)
             self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, self.oneInChance)
-            self.enemyWrangler.hurtEnemies(self.character.liveRounds, self.character.damage)
+            self.enemyWrangler.hurtEnemies(self.character.liveRounds)
         if(self.gracePeriod > 0):
             self.gracePeriod -= 1
 
