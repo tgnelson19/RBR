@@ -42,12 +42,17 @@ class Background:
                 if(j == self.numVerti -1  and i > (int(self.numHori / 2) - self.doorRad)  and i < (int(self.numHori / 2) + self.doorRad) ):
                     self.currentLayout[i][j] = "default"
         
-
+    def displayCurrentWalls(self, screen, backColor):
+        for i in range(self.numHori):
+            for j in range(self.numVerti):
+                if (self.currentLayout[i][j] == "wall"):
+                    pygame.draw.rect(screen, self.tileTypes[self.currentLayout[i][j]], pygame.Rect(i*self.tileSize, j*self.tileSize, self.tileSize, self.tileSize))
     
-    def displayCurrentRoom(self, screen, backColor):
+    def displayCurrentDefaults(self, screen, backColor):
         
         self.tileTypes["default"] = backColor
 
         for i in range(self.numHori):
             for j in range(self.numVerti):
-                pygame.draw.rect(screen, self.tileTypes[self.currentLayout[i][j]], pygame.Rect(i*self.tileSize, j*self.tileSize, self.tileSize, self.tileSize))
+                if (self.currentLayout[i][j] == "default"):
+                    pygame.draw.rect(screen, self.tileTypes[self.currentLayout[i][j]], pygame.Rect(i*self.tileSize, j*self.tileSize, self.tileSize, self.tileSize))

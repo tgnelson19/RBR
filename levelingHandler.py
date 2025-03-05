@@ -43,7 +43,7 @@ class LevelingHandler:
         
         #Base values for upgrades at common
 
-        self.upgradeBasicTypesAdd = {"Defense" : 0.25, "Bullet Pierce" : 0.25, "Bullet Count" : 0.25, "Spread Angle" : pi/8, 
+        self.upgradeBasicTypesAdd = {"Defense" : 1, "Bullet Pierce" : 0.25, "Bullet Count" : 0.25, "Spread Angle" : format(pi/8, '.3g'), 
                                   "Attack Speed" : -1, "Bullet Speed" : 2, "Bullet Range" : 50, "Bullet Damage" : 0.25, 
                                   "Bullet Size" : 5, "Player Speed" : 0.25}
         
@@ -98,7 +98,7 @@ class LevelingHandler:
         textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*15))
         screen.blit(textRender, textRect)
         if self.leftCardUpgradeMath == "addative":
-            textRender = self.descFont.render("By " + str(self.upgradeBasicTypesAdd[self.leftCardUpgradeType]* self.upgradeRarity[self.leftCardUpgradeRarity]), True, self.baseColor)
+            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.leftCardUpgradeType]* self.upgradeRarity[self.leftCardUpgradeRarity], '.3g')), True, self.baseColor)
             textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*16))
             screen.blit(textRender, textRect)
         elif self.leftCardUpgradeMath == "multiplicative":
@@ -123,7 +123,7 @@ class LevelingHandler:
         textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize*15))
         screen.blit(textRender, textRect)
         if self.midCardUpgradeMath == "addative":
-            textRender = self.descFont.render("By " + str(self.upgradeBasicTypesAdd[self.midCardUpgradeType] * self.upgradeRarity[self.midCardUpgradeRarity]), True, self.baseColor)
+            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.midCardUpgradeType]* self.upgradeRarity[self.midCardUpgradeRarity], '.3g')), True, self.baseColor)
             textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize*16))
             screen.blit(textRender, textRect)
         elif self.midCardUpgradeMath == "multiplicative":
@@ -148,7 +148,7 @@ class LevelingHandler:
         textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize*15))
         screen.blit(textRender, textRect)
         if self.rightCardUpgradeMath == "addative":
-            textRender = self.descFont.render("By " + str(self.upgradeBasicTypesAdd[self.rightCardUpgradeType] * self.upgradeRarity[self.rightCardUpgradeRarity]), True, self.baseColor)
+            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.rightCardUpgradeType]* self.upgradeRarity[self.rightCardUpgradeRarity], '.3g')), True, self.baseColor)
             textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize*16))
             screen.blit(textRender, textRect)
         elif self.rightCardUpgradeMath == "multiplicative":

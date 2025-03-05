@@ -34,6 +34,8 @@ class EnemyWrangler:
 
         self.enemyBaseExpValue = 10
 
+        self.outOfMapDelta = 50
+
         self.playerHit = False
 
         self.expCount = 0
@@ -46,9 +48,9 @@ class EnemyWrangler:
         for bubble in self.experienceList:
             bubble.updateBubble(screen, self.noNoZone, tileSize, pAuraSpeed)
             
-    def updateDamageTexts(self, screen, enSize):
+    def updateDamageTexts(self, screen):
         for dText in self.damageTextList:
-            dText.drawAndUpdateDamageText(screen, enSize)
+            dText.drawAndUpdateDamageText(screen)
             if (dText.deleteMe == True):
                 self.damageTextList.remove(dText)
         
@@ -61,17 +63,17 @@ class EnemyWrangler:
             if (type == "crawler"):
                 spawnSeed = randint(1,4)
                 if (spawnSeed == 1):
-                    x = randint(1,w - 1)
-                    y = 1
+                    x = randint(-self.outOfMapDelta, w + self.outOfMapDelta)
+                    y = -self.outOfMapDelta
                 elif (spawnSeed == 2):
-                    x = randint(1,w - 1)
-                    y = h - 1
+                    x = randint(-self.outOfMapDelta, w + self.outOfMapDelta)
+                    y = h + self.outOfMapDelta
                 elif (spawnSeed == 3):
-                    x = 0
-                    y = randint(1,h - 1)
+                    x = -self.outOfMapDelta
+                    y = randint(-self.outOfMapDelta,h + self.outOfMapDelta)
                 elif (spawnSeed == 4):
-                    x = w - 1
-                    y = randint(1,h - 1)
+                    x = w + self.outOfMapDelta
+                    y = randint(-self.outOfMapDelta, h + self.outOfMapDelta)
 
                 enemyRange = randint(2, 15) / 10 #Randomly generated enemies for each stage
 
@@ -105,7 +107,7 @@ class EnemyWrangler:
                             if (bullet.bPierce <= 0):
                                 bullet.remFlag = True
                             eman.hp -= damage
-                            self.damageTextList.append(DamageText(eman.posX, eman.posY, self.damageTextSizeBase, pygame.Color(200,120,0), damage, self.frameRate))
+                            self.damageTextList.append(DamageText(eman.posX, eman.posY, self.damageTextSizeBase, pygame.Color(200,120,0), damage, eman.size, self.frameRate))
                             if (eman.hp <= 0):
                                 self.enemyList.remove(eman)
                                 self.numOfEnemiesKilled += 1
@@ -121,7 +123,7 @@ class EnemyWrangler:
                     trueDMG = eman.damage - pDefense
                     if (trueDMG < 0):
                         trueDMG = 0
-                    self.damageTextList.append(DamageText(pX, pY, self.damageTextSizeBase, pygame.Color(200,100,0), trueDMG, self.frameRate))
+                    self.damageTextList.append(DamageText(pX, pY, self.damageTextSizeBase, pygame.Color(200,100,0), trueDMG, self.tileSize, self.frameRate))
                     return trueDMG
 
     def expForPlayer(self, pX, pY, pSize, pAura):

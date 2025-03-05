@@ -160,13 +160,10 @@ class Variables:
 
     # Put functions to do things here (Main chunks of code)
 
-        self.background.displayCurrentRoom(self.screen, self.backgroundColor)
+        self.background.displayCurrentDefaults(self.screen, self.backgroundColor)
 
         #self.bugCheckerOnMousePos() # Helps determine mouse position
 
-        self.displayNumOfEnemiesKilled()
-
-        
         if (self.autoFire):
             self.character.handlingBullets(self.screen, True, self.mouseX, self.mouseY)
         else:
@@ -188,7 +185,13 @@ class Variables:
                 self.state = "titleScreen"
                 self.highestLevel = self.character.currentLevel
 
-        self.enemyWrangler.updateDamageTexts(self.screen, self.tileSizeGlobal)
+        self.enemyWrangler.updateDamageTexts(self.screen)
+
+        self.enemyWrangler.drawEnemies(self.screen)
+
+        self.background.displayCurrentWalls(self.screen, self.backgroundColor)
+
+        self.displayMiscStats()
 
         playerDecision = self.character.moveAndDrawPlayer(self.screen, self.keysDown) # Moves player around the screen based on keysdown
 
@@ -212,7 +215,7 @@ class Variables:
         if(self.gracePeriod > 0):
             self.gracePeriod -= 1
 
-        self.enemyWrangler.drawEnemies(self.screen)
+        
 
         if (playerDecision != "no"):
 
@@ -258,7 +261,7 @@ class Variables:
     ##########################################################################################################
         
    
-    def displayNumOfEnemiesKilled(self):
+    def displayMiscStats(self):
         textRender = self.font.render("Stage: " + str(self.stage), True, self.textColor)
         textRect = textRender.get_rect(topleft = (int(self.tileSizeGlobal*1.5), int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
@@ -269,7 +272,7 @@ class Variables:
         textRect = textRender.get_rect(topleft = (int(self.sW/1.65), self.sH - self.tileSizeGlobal + int(self.tileSizeGlobal/(25/3))))
         self.screen.blit(textRender, textRect)
         if (self.numKilledNeeded - self.enemyWrangler.numOfEnemiesKilled > 0):
-            textRender = self.font.render("Kills needed: " + str(self.numKilledNeeded - self.enemyWrangler.numOfEnemiesKilled), True, self.textColor)
+            textRender = self.font.render("Kills Till Next Stage: " + str(self.numKilledNeeded - self.enemyWrangler.numOfEnemiesKilled), True, self.textColor)
             textRect = textRender.get_rect(center = (int(self.sW/2), int(self.tileSizeGlobal/(2))))
             self.screen.blit(textRender, textRect)
         
@@ -379,5 +382,6 @@ class Variables:
             self.newRandoUps = False
             self.gracePeriod = self.frameRate * 2
             self.state = "gameRun"
+
 
         pygame.display.flip()  # Displays currently drawn frame
