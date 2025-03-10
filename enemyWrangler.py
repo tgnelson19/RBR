@@ -122,6 +122,7 @@ class EnemyWrangler:
             if(pX + pSize > eman.posX and pX < eman.posX + eman.size):
                 if(pY + pSize > eman.posY and pY < eman.posY + eman.size):
                     self.playerHit = True
+                    self.numOfEnemiesKilled += 1
                     self.enemyList.remove(eman)
                     self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, eman.expValue*(self.stage*self.experienceStageMod), self.frameRate))
                     trueDMG = eman.damage - pDefense

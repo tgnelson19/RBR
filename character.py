@@ -32,7 +32,7 @@ class Character:
         self.attackCooldownTimer = 0 #Number of frames before next bullet can be fired (Yes, I know, I don't care)
         self.bulletSpeed = 5
         self.bulletRange = 200
-        self.bulletSize = 10
+        self.bulletSize = tileSize / 2
         self.bulletColor = pygame.Color(125,125,125)
         self.aura = 50
         self.auraSpeed = 4
@@ -54,15 +54,16 @@ class Character:
 
         self.collectiveStats = {"Defense" : self.defense, "Bullet Pierce" : self.bulletPierce, "Bullet Count" : self.projectileCount, "Spread Angle" : self.azimuthalProjectileAngle, 
                                   "Attack Speed" : self.attackCooldownStat, "Bullet Speed" : self.bulletSpeed, "Bullet Range" : self.bulletRange, "Bullet Damage" : self.damage, 
-                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed, "Crit Chance" : self.critChance, "Crit Damage" : self.critDamage}
+                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed, "Crit Chance" : self.critChance, "Crit Damage" : self.critDamage, 
+                                  "Aura Size" : self.aura, "Aura Strength" : self.auraSpeed}
         
         self.collectiveAddStats = {"Defense" : [0], "Bullet Pierce" : [0], "Bullet Count" : [0], "Spread Angle" : [0], 
                                   "Attack Speed" : [0], "Bullet Speed" : [0], "Bullet Range" : [0], "Bullet Damage" : [0], 
-                                  "Bullet Size" : [0], "Player Speed" : [0], "Crit Chance": [0], "Crit Damage": [0]}
+                                  "Bullet Size" : [0], "Player Speed" : [0], "Crit Chance": [0], "Crit Damage": [0], "Aura Size" : [0], "Aura Strength" : [0]}
         
         self.collectiveMultStats = {"Defense" : [1], "Bullet Pierce" : [1], "Bullet Count" : [1], "Spread Angle" : [1], 
                                   "Attack Speed" : [1], "Bullet Speed" : [1], "Bullet Range" : [1], "Bullet Damage" : [1], 
-                                  "Bullet Size" : [1], "Player Speed" : [1], "Crit Chance": [1], "Crit Damage": [1]}
+                                  "Bullet Size" : [1], "Player Speed" : [1], "Crit Chance": [1], "Crit Damage": [1], "Aura Size" : [1], "Aura Strength" : [1]}
 
     def newNoNoZone(self, noNoZone, tileSize):
         self.noNoZone = noNoZone
@@ -96,16 +97,17 @@ class Character:
 
         self.collectiveStats = {"Defense" : self.defense, "Bullet Pierce" : self.bulletPierce, "Bullet Count" : self.projectileCount, "Spread Angle" : self.azimuthalProjectileAngle, 
                                   "Attack Speed" : self.attackCooldownStat, "Bullet Speed" : self.bulletSpeed, "Bullet Range" : self.bulletRange, "Bullet Damage" : self.damage, 
-                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed, "Crit Chance" : self.critChance, "Crit Damage" : self.critDamage}
+                                  "Bullet Size" : self.bulletSize, "Player Speed" : self.playerSpeed, "Crit Chance" : self.critChance, "Crit Damage" : self.critDamage, 
+                                  "Aura Size" : self.aura, "Aura Strength" : self.auraSpeed}
         
         self.collectiveAddStats = {"Defense" : [0], "Bullet Pierce" : [0], "Bullet Count" : [0], "Spread Angle" : [0], 
                                   "Attack Speed" : [0], "Bullet Speed" : [0], "Bullet Range" : [0], "Bullet Damage" : [0], 
-                                  "Bullet Size" : [0], "Player Speed" : [0], "Crit Chance": [0], "Crit Damage": [0]}
+                                  "Bullet Size" : [0], "Player Speed" : [0], "Crit Chance": [0], "Crit Damage": [0], "Aura Size" : [0], "Aura Strength" : [0]}
         
         self.collectiveMultStats = {"Defense" : [1], "Bullet Pierce" : [1], "Bullet Count" : [1], "Spread Angle" : [1], 
                                   "Attack Speed" : [1], "Bullet Speed" : [1], "Bullet Range" : [1], "Bullet Damage" : [1], 
-                                  "Bullet Size" : [1], "Player Speed" : [1], "Crit Chance": [1], "Crit Damage": [1]}
-
+                                  "Bullet Size" : [1], "Player Speed" : [1], "Crit Chance": [1], "Crit Damage": [1], "Aura Size" : [1], "Aura Strength" : [1]}
+        
     def combarinoPlayerStats(self):
         self.projectileCount = (self.collectiveStats["Bullet Count"] + sum(self.collectiveAddStats["Bullet Count"])) * (self.multiply_list(self.collectiveMultStats["Bullet Count"]))
         self.azimuthalProjectileAngle = (self.collectiveStats["Spread Angle"] + sum(self.collectiveAddStats["Spread Angle"])) * (self.multiply_list(self.collectiveMultStats["Spread Angle"]))
@@ -120,28 +122,8 @@ class Character:
         self.defense = (self.collectiveStats["Defense"] + sum(self.collectiveAddStats["Defense"])) * (self.multiply_list(self.collectiveMultStats["Defense"]))
         self.critChance = (self.collectiveStats["Crit Chance"] + sum(self.collectiveAddStats["Crit Chance"])) * (self.multiply_list(self.collectiveMultStats["Crit Chance"]))
         self.critDamage = (self.collectiveStats["Crit Damage"] + sum(self.collectiveAddStats["Crit Damage"])) * (self.multiply_list(self.collectiveMultStats["Crit Damage"]))
-
-    # def levelUpStatsBasic(self):
-
-    #     if (self.attackCooldownStat > 1):
-    #         self.attackCooldownStat = int(self.attackCooldownStat / self.levelMod)
-        
-    #     if (self.bulletSpeed < 50):
-    #         self.bulletSpeed = (self.bulletSpeed* self.levelMod)
-
-    #     if (self.playerSpeed < 50):
-    #         self.playerSpeed *= (1+(self.levelMod-1)/3)
-        
-    #     if (self.bulletRange < 1000):
-    #         self.bulletRange = (self.bulletRange*self.levelMod)
-
-    #     if(self.currentLevel % self.multiBallLevelMod == 0):
-    #         self.projectileCount += 1
-            
-    #     self.damage += 0.1
-    #     self.bulletPierce += 0
-    #     self.defense += 0
-
+        self.aura = (self.collectiveStats["Aura Size"] + sum(self.collectiveAddStats["Aura Size"])) * (self.multiply_list(self.collectiveMultStats["Aura Size"]))
+        self.auraSpeed = (self.collectiveStats["Aura Strength"] + sum(self.collectiveAddStats["Aura Strength"])) * (self.multiply_list(self.collectiveMultStats["Aura Strength"]))
 
     def handlingBullets(self, screen, mouseDown, mouseX, mouseY):
 
