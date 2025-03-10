@@ -64,17 +64,17 @@ class EnemyWrangler:
             if (type == "crawler"):
                 spawnSeed = randint(1,4)
                 if (spawnSeed == 1):
-                    x = randint(-self.outOfMapDelta, w + self.outOfMapDelta)
+                    x = randint(int(-self.outOfMapDelta),int(w + self.outOfMapDelta))
                     y = -self.outOfMapDelta
                 elif (spawnSeed == 2):
-                    x = randint(-self.outOfMapDelta, w + self.outOfMapDelta)
+                    x = randint(int(-self.outOfMapDelta),int(w + self.outOfMapDelta))
                     y = h + self.outOfMapDelta
                 elif (spawnSeed == 3):
                     x = -self.outOfMapDelta
-                    y = randint(-self.outOfMapDelta,h + self.outOfMapDelta)
+                    y = randint(int(-self.outOfMapDelta),int(h + self.outOfMapDelta))
                 elif (spawnSeed == 4):
                     x = w + self.outOfMapDelta
-                    y = randint(-self.outOfMapDelta, h + self.outOfMapDelta)
+                    y = randint(int(-self.outOfMapDelta),int(h + self.outOfMapDelta))
 
                 enemyRange = randint(2, 15) / 10 #Randomly generated enemies for each stage
 

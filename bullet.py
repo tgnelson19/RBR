@@ -1,10 +1,26 @@
 import pygame
-from math import sin, cos, sqrt
+from math import sin, cos, sqrt, degrees
 
 #Handles basic bullet statistics used during game calculation
 class Bullet:
 
-    def __init__(self, pX, pY, speed, direc, bRange, size, color, pierce, damage, currCrit, sW, sH, frameRate):
+    def __init__(
+            self, 
+            pX, pY, 
+            speed, 
+            direc, 
+            bRange, 
+            size, 
+            color, 
+            pierce, 
+            damage, 
+            currCrit, 
+            sW, sH, 
+            frameRate,
+            area_of_effect=0,
+            bullet_type="default",
+            ):
+        
         self.posX = pX
         self.posY = pY
         self.iPosX = pX
@@ -21,7 +37,31 @@ class Bullet:
         self.frameRate = frameRate
         self.damage = damage
         self.currCrit = currCrit
+        self.bulletType = bullet_type
+        self.AOE = area_of_effect
 
+
+        # 1) Load your custom image
+        #    Make sure "my_bullet.png" is in the correct folder (or provide a full path).
+        #    convert_alpha() helps maintain transparency if the image has an alpha channel.
+
+        # Decide how to handle each bullet type
+        if self.bulletType == "default":
+            # load your custom image
+            self.bullet_image = pygame.image.load("assets/projectile-png.png").convert_alpha()
+            # scale to match self.size
+            self.bullet_image = pygame.transform.scale(self.bullet_image, (int(self.size), int(self.size)))
+        elif self.bulletType == "explosive":
+            self.bullet_image = pygame.image.load("assets/projectile-png.png").convert_alpha()
+            self.bullet_image = pygame.transform.scale(self.bullet_image, (int(self.size), int(self.size)))
+            self.bPierce = 0
+            self.AOE = self.size*3
+        elif self.bulletType == "something_else":
+            # Possibly load a different image or do some other logic
+            pass
+        # 2) Optionally, scale it to match your bullet size if needed
+        #    e.g. transform.scale to (width, height). If your bullet is square, do (size, size):
+        self.bullet_image = pygame.transform.scale(self.bullet_image, (int(self.size), int(self.size)))
 
     def updateAndDrawBullet(self, screen):
 
@@ -41,7 +81,21 @@ class Bullet:
             self.posY = 1
             self.remFlag = True
 
-        pygame.draw.rect(screen, self.color, pygame.Rect(self.posX, self.posY, self.size, self.size))
+        #pygame.draw.rect(screen, self.color, pygame.Rect(self.posX, self.posY, self.size, self.size))
 
-        if(sqrt((abs(self.posX - self.iPosX) ** 2) + (abs(self.posY - self.iPosY) ** 2)) >= self.bRange): 
+        angle_deg = degrees(self.direc)  # or with some + offset
+        rotated_image = pygame.transform.rotate(self.bullet_image, angle_deg)
+
+        # Create a rect so the center is at (posX, posY)
+        rotated_rect = rotated_image.get_rect(center=(self.posX+self.size/2, self.posY +self.size/2))
+
+        # Now blit so the bullet’s center remains at self.posX, self.posY
+        screen.blit(rotated_image, rotated_rect)
+
+
+        #if(sqrt((abs(self.posX - self.iPosX) ** 2) + (abs(self.posY - self.iPosY) ** 2)) >= self.bRange): 
+        
+        # 2) Check bullet travel distance
+        dist_traveled = sqrt((self.posX - self.iPosX) ** 2 + (self.posY - self.iPosY) ** 2)
+        if dist_traveled >= self.bRange:
             self.remFlag = True
