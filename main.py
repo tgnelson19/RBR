@@ -8,10 +8,12 @@ while not vars.done:  # Loop to render each frame
     if vars.state == "titleScreen":
         vars.doTheTitleScreen()
 
+    #This state is when the player reaches a level up
+    elif vars.state == "leveling":
+        vars.LevelingLogic()
+
     #This state is when the game runs
     elif vars.state == "gameRun": 
         vars.doAnUpdate()  
 
-    #This state is when the player reaches a level up
-    elif vars.state == "leveling":
-        vars.LevelingLogic()
+    

@@ -12,18 +12,20 @@ class LevelingHandler:
         self.cardColor = cardColor
         self.baseColor = pygame.Color(0,0,0)
 
-        self.titleFont = self.font = pygame.font.Font("media/coolveticarg.otf", int(tileSize*1.5))
-        self.descFont = self.font = pygame.font.Font("media/coolveticarg.otf", int(tileSize))
+        # Scale tileSize dynamically
+        self.tileSize = min(self.sW, self.sH) / 20  
+
+        # Scale fonts
+        self.titleFont = pygame.font.Font("media/coolveticarg.otf", int(self.tileSize * 1.3))
+        self.descFont = pygame.font.Font("media/coolveticarg.otf", int(self.tileSize *.7))
+
         self.textColor = pygame.Color(0,0,0)
 
-        cardWidth = (self.sW - self.tileSize * 5)/3
-        cardHeight = (self.sH - self.tileSize * 6)
+        self.update_layout()
 
         self.firstClick = True
 
-        self.leftCard = pygame.Rect(self.tileSize * 2, self.tileSize * 3, cardWidth, cardHeight)
-        self.midCard = pygame.Rect(self.tileSize * 3 + cardWidth, self.tileSize * 3, cardWidth, cardHeight)
-        self.rightCard = pygame.Rect(self.tileSize * 4 + 2*cardWidth, self.tileSize * 3, cardWidth, cardHeight)
+        
 
         
         self.upgradeRarityColors = {"Common" : pygame.Color(0,0,0), "Rare" : pygame.Color(0,0,200), "Epic" : pygame.Color(128,0,128), "Legendary" : pygame.Color(255, 215, 0), "Mythical" : pygame.Color(255,255,255)}
@@ -75,85 +77,57 @@ class LevelingHandler:
         self.maths = [self.leftCardUpgradeMath, self.midCardUpgradeMath, self.rightCardUpgradeMath]
         self.types = [self.leftCardUpgradeType, self.midCardUpgradeType, self.rightCardUpgradeType]
 
+    def update_layout(self):
+        """Recalculate card positions and sizes dynamically."""
+        cardWidth = (self.sW - self.tileSize * 5) / 3
+        cardHeight = self.sH * .6  # Cards take up 45% of screen height
+
+        cardY = (self.sH - cardHeight) / 2
+
+        self.leftCard = pygame.Rect(self.tileSize * 2, cardY, cardWidth, cardHeight)
+        self.midCard = pygame.Rect(self.tileSize * 3 + cardWidth, cardY, cardWidth, cardHeight)
+        self.rightCard = pygame.Rect(self.tileSize * 4 + 2 * cardWidth, cardY, cardWidth, cardHeight)
+
+
     def drawCards(self, screen):
+        """Draw the three cards, keeping the original structure intact but making it resolution-adaptive."""
+        for card, rarity, mathType, upgradeType in zip(
+            [self.leftCard, self.midCard, self.rightCard],
+            [self.leftCardUpgradeRarity, self.midCardUpgradeRarity, self.rightCardUpgradeRarity],
+            [self.leftCardUpgradeMath, self.midCardUpgradeMath, self.rightCardUpgradeMath],
+            [self.leftCardUpgradeType, self.midCardUpgradeType, self.rightCardUpgradeType]
+        ):
+            pygame.draw.rect(screen, self.cardColor, card)
 
-        pygame.draw.rect(screen, self.cardColor, self.leftCard)
-        pygame.draw.rect(screen, self.cardColor, self.midCard)
-        pygame.draw.rect(screen, self.cardColor, self.rightCard)
-
-        #Left Card Render
-
-        textRender = self.titleFont.render(self.leftCardUpgradeRarity, True, self.upgradeRarityColors[self.leftCardUpgradeRarity])
-        textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize))
-        screen.blit(textRender, textRect)
-
-        textRender = self.titleFont.render(self.leftCardUpgradeType, True, self.upgradeRarityColors[self.leftCardUpgradeRarity])
-        textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*2.5))
-        screen.blit(textRender, textRect)
-
-        textRender = self.descFont.render(self.upgradeBasicsMaths[self.leftCardUpgradeMath] + " increases", True, self.baseColor)
-        textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*14))
-        screen.blit(textRender, textRect)
-        textRender = self.descFont.render(self.leftCardUpgradeType, True, self.baseColor)
-        textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*15))
-        screen.blit(textRender, textRect)
-        if self.leftCardUpgradeMath == "addative":
-            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.leftCardUpgradeType]*self.upgradeRarity[self.leftCardUpgradeRarity], '.3g')), True, self.baseColor)
-            textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*16))
-            screen.blit(textRender, textRect)
-        elif self.leftCardUpgradeMath == "multiplicative":
-            textRender = self.descFont.render("By " + str(1 + self.upgradeBasicTypesMult[self.leftCardUpgradeType] * self.upgradeRarity[self.leftCardUpgradeRarity]) + "x", True, self.baseColor)
-            textRect = textRender.get_rect(center = (self.leftCard.centerx, self.leftCard.top + self.tileSize*16))
+            # Title (Rarity)
+            textRender = self.titleFont.render(rarity, True, self.upgradeRarityColors[rarity])
+            textRect = textRender.get_rect(center=(card.centerx, card.top + card.height * 0.1))  # 10% from top
             screen.blit(textRender, textRect)
 
-        #Mid Card Render
-
-        textRender = self.titleFont.render(self.midCardUpgradeRarity, True, self.upgradeRarityColors[self.midCardUpgradeRarity])
-        textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize))
-        screen.blit(textRender, textRect)
-
-        textRender = self.titleFont.render(self.midCardUpgradeType, True, self.upgradeRarityColors[self.midCardUpgradeRarity])
-        textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize*2.5))
-        screen.blit(textRender, textRect)
-
-        textRender = self.descFont.render(self.upgradeBasicsMaths[self.midCardUpgradeMath] + " increases", True, self.baseColor)
-        textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize*14))
-        screen.blit(textRender, textRect)
-        textRender = self.descFont.render(self.midCardUpgradeType, True, self.baseColor)
-        textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize*15))
-        screen.blit(textRender, textRect)
-        if self.midCardUpgradeMath == "addative":
-            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.midCardUpgradeType]* self.upgradeRarity[self.midCardUpgradeRarity], '.3g')), True, self.baseColor)
-            textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize*16))
-            screen.blit(textRender, textRect)
-        elif self.midCardUpgradeMath == "multiplicative":
-            textRender = self.descFont.render("By " + str(1 + self.upgradeBasicTypesMult[self.midCardUpgradeType] * self.upgradeRarity[self.midCardUpgradeRarity]) + "x", True, self.baseColor)
-            textRect = textRender.get_rect(center = (self.midCard.centerx, self.midCard.top + self.tileSize*16))
+            # Upgrade Type
+            textRender = self.titleFont.render(upgradeType, True, self.upgradeRarityColors[rarity])
+            textRect = textRender.get_rect(center=(card.centerx, card.top + card.height * 0.25))  # 25% from top
             screen.blit(textRender, textRect)
 
-        #Right Card Render
-
-        textRender = self.titleFont.render(self.rightCardUpgradeRarity, True, self.upgradeRarityColors[self.rightCardUpgradeRarity])
-        textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize))
-        screen.blit(textRender, textRect)
-
-        textRender = self.titleFont.render(self.rightCardUpgradeType, True, self.upgradeRarityColors[self.rightCardUpgradeRarity])
-        textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize*2.5))
-        screen.blit(textRender, textRect)
-
-        textRender = self.descFont.render(self.upgradeBasicsMaths[self.rightCardUpgradeMath] + " increases", True, self.baseColor)
-        textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize*14))
-        screen.blit(textRender, textRect)
-        textRender = self.descFont.render(self.rightCardUpgradeType, True, self.baseColor)
-        textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize*15))
-        screen.blit(textRender, textRect)
-        if self.rightCardUpgradeMath == "addative":
-            textRender = self.descFont.render("By " + str(format(self.upgradeBasicTypesAdd[self.rightCardUpgradeType]* self.upgradeRarity[self.rightCardUpgradeRarity], '.3g')), True, self.baseColor)
-            textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize*16))
+            # Description (Properly placed near the bottom)
+            desc_y_start = card.bottom - card.height * 0.3  # 30% up from the bottom
+            textRender = self.descFont.render(self.upgradeBasicsMaths[mathType] + " increases", True, self.baseColor)
+            textRect = textRender.get_rect(center=(card.centerx, desc_y_start))
             screen.blit(textRender, textRect)
-        elif self.rightCardUpgradeMath == "multiplicative":
-            textRender = self.descFont.render("By " + str(1 + self.upgradeBasicTypesMult[self.rightCardUpgradeType] * self.upgradeRarity[self.rightCardUpgradeRarity]) + "x", True, self.baseColor)
-            textRect = textRender.get_rect(center = (self.rightCard.centerx, self.rightCard.top + self.tileSize*16))
+
+            textRender = self.descFont.render(upgradeType, True, self.baseColor)
+            textRect = textRender.get_rect(center=(card.centerx, desc_y_start + self.tileSize * 0.7))  # Small offset
+            screen.blit(textRender, textRect)
+
+            # Render Value
+            value_y = card.bottom - card.height * 0.05
+
+            if mathType == "addative":
+                textRender = self.descFont.render(f"By {1}", True, self.baseColor)  # Placeholder value
+            else:
+                textRender = self.descFont.render(f"By {1.2}x", True, self.baseColor)  # Placeholder multiplier
+
+            textRect = textRender.get_rect(center=(card.centerx, value_y))
             screen.blit(textRender, textRect)
 
     def PlayerClicked(self, mouseDown, mouseX, mouseY):
