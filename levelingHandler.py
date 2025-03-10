@@ -41,8 +41,6 @@ class LevelingHandler:
                                   "Attack Speed", "Bullet Speed", "Bullet Range", "Bullet Damage", 
                                   "Bullet Size", "Player Speed", "Crit Chance", "Crit Damage", "Aura Size", "Aura Strength"]
         
-        self.upgradeTypesListDebug = ["Aura Size", "Aura Strength"]
-        
         #Base values for upgrades at common
 
         self.upgradeBasicTypesAdd = {"Defense" : 1, "Bullet Pierce" : 0.25, "Bullet Count" : 0.25, "Spread Angle" : pi/8, 
@@ -51,7 +49,7 @@ class LevelingHandler:
         
         self.upgradeBasicTypesMult = {"Defense" : 0.2, "Bullet Pierce" : 0.2, "Bullet Count" : 0.2, "Spread Angle" : 0.2, 
                                   "Attack Speed" : -0.05, "Bullet Speed" : 0.25, "Bullet Range" : 0.25, "Bullet Damage" : 0.2, 
-                                  "Bullet Size" : 0.2, "Player Speed" : 0.2, "Crit Chance" : 0.05, "Crit Damage" : 0.2, "Aura Size" : 10, "Aura Strength" : 1}
+                                  "Bullet Size" : 0.2, "Player Speed" : 0.2, "Crit Chance" : 0.05, "Crit Damage" : 0.2, "Aura Size" : 0.2, "Aura Strength" : 0.2}
         
         self.upgradeBasicTypesMapper = {"Defense" : "defense", "Bullet Pierce" : "bulletPierce", "Bullet Count" : "projectileCount", "Spread Angle" : "azimuthalProjectileAngle", 
                                   "Attack Speed" : "attackCooldownStat", "Bullet Speed" : "bulletSpeed", "Bullet Range" : "bulletRange", "Bullet Damage" : "damage", 
