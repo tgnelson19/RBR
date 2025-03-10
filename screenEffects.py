@@ -29,11 +29,11 @@ class ScreenEffects:
             pygame.draw.circle(
             overlay,
             (255, 0, 0, 128),     # RGBA
-            (r, r),               # circle center relative to overlay
-            r                     # radius
+            (radius, radius),               # circle center relative to overlay
+            radius                     # radius
             )
 
-            screen.blit(overlay, (cx - r, cy - r))
+            screen.blit(overlay, (cx - radius, cy - radius))
 
             self.duration -= 1
             return (self.duration > 0)
