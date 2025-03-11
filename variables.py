@@ -136,6 +136,7 @@ class Variables:
         self.character.resetCharStats()
         self.enemyWrangler.stage = 1
         self.autoFire = False
+        self.levelingHandler.rerolls = 10
         
         #Displays title texts on title screen
         textRender = self.font.render("RbR : Press Space To Play", True, self.textColor)
@@ -210,7 +211,7 @@ class Variables:
         self.enemyWrangler.expForPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.aura)
 
         #Determines if the player needs to be hurt on the current frame
-        newDamage = self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.defense)
+        newDamage = self.enemyWrangler.hurtPlayer(self.character.positionX, self.character.positionY, self.character.playerSize, self.character.defense,self.character.xpMult)
 
         if (self.enemyWrangler.playerHit):
             self.character.healthPoints -= newDamage
@@ -254,12 +255,12 @@ class Variables:
         if (self.enemyWrangler.numOfEnemiesKilled >= self.numKilledNeeded):
             self.background.openDoors()
             if(self.gracePeriod <= 0):
-                self.enemyWrangler.hurtEnemies(self.character.liveRounds)
+                self.enemyWrangler.hurtEnemies(self.character.liveRounds,self.character.xpMult)
                 self.enemyWrangler.updateEnemies(self.character.positionX, self.character.positionY)
         elif(self.enemiesEnabled and self.gracePeriod <= 0):
             self.enemyWrangler.updateEnemies(self.character.positionX, self.character.positionY)
             self.enemyWrangler.makeANewEnemy("crawler", self.sW, self.sH, self.oneInChance)
-            self.enemyWrangler.hurtEnemies(self.character.liveRounds)
+            self.enemyWrangler.hurtEnemies(self.character.liveRounds,self.character.xpMult)
         if(self.gracePeriod > 0):
             self.gracePeriod -= 1
 

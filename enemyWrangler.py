@@ -5,6 +5,7 @@ from bullet import Bullet
 from experienceBubble import ExperienceBubble
 from math import atan, pi
 from damageText import DamageText
+from character import Character
 
 #Wrangles the enemies and exp bubbles and damage texts (Pretty simple in concept)
 class EnemyWrangler:    
@@ -94,7 +95,7 @@ class EnemyWrangler:
         for enemy in self.enemyList:
             enemy.drawEnemy(screen)
         
-    def hurtEnemies(self, liveRounds):
+    def hurtEnemies(self, liveRounds, xpMult):
         for bullet in liveRounds:
             originX = bullet.posX + bullet.size/2
             originY = bullet.posY + bullet.size/2
@@ -115,16 +116,16 @@ class EnemyWrangler:
                             if (eman.hp <= 0):
                                 self.enemyList.remove(eman)
                                 self.numOfEnemiesKilled += 1
-                                self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, eman.expValue*(self.stage*self.experienceStageMod), self.frameRate))
+                                self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, xpMult * (eman.expValue*(self.stage*self.experienceStageMod)), self.frameRate))
 
-    def hurtPlayer(self, pX, pY, pSize, pDefense):
+    def hurtPlayer(self, pX, pY, pSize, pDefense,xpMult):
         for eman in self.enemyList:
             if(pX + pSize > eman.posX and pX < eman.posX + eman.size):
                 if(pY + pSize > eman.posY and pY < eman.posY + eman.size):
                     self.playerHit = True
                     self.numOfEnemiesKilled += 1
                     self.enemyList.remove(eman)
-                    self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, eman.expValue*(self.stage*self.experienceStageMod), self.frameRate))
+                    self.experienceList.append(ExperienceBubble(eman.posX, eman.posY, xpMult* (eman.expValue*(self.stage*self.experienceStageMod)), self.frameRate))
                     trueDMG = eman.damage - pDefense
                     if (trueDMG < 0):
                         trueDMG = 0

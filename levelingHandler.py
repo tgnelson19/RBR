@@ -11,6 +11,8 @@ class LevelingHandler:
         self.sH = sH
         self.cardColor = cardColor
         self.baseColor = pygame.Color(0,0,0)
+        self.rerolls = 10
+        
 
         # Scale tileSize dynamically
         self.tileSize = min(self.sW, self.sH) / 20  
@@ -41,21 +43,25 @@ class LevelingHandler:
 
         self.upgradeTypesList = ["Defense", "Bullet Pierce", "Bullet Count", "Spread Angle", 
                                   "Attack Speed", "Bullet Speed", "Bullet Range", "Bullet Damage", 
-                                  "Bullet Size", "Player Speed", "Crit Chance", "Crit Damage", "Aura Size", "Aura Strength"]
+                                  "Bullet Size", "Player Speed", "Crit Chance", "Crit Damage",
+                                   "Aura Size", "Aura Strength", "Exp Multiplier"]
         
         #Base values for upgrades at common
 
         self.upgradeBasicTypesAdd = {"Defense" : 1, "Bullet Pierce" : 0.25, "Bullet Count" : 0.25, "Spread Angle" : pi/8, 
                                   "Attack Speed" : -1, "Bullet Speed" : 4, "Bullet Range" : 100, "Bullet Damage" : 0.25, 
-                                  "Bullet Size" : 5, "Player Speed" : 0.25, "Crit Chance" : 0.1, "Crit Damage" : 0.5, "Aura Size" : 10, "Aura Strength" : 1}
+                                  "Bullet Size" : 5, "Player Speed" : 0.25, "Crit Chance" : 0.1, "Crit Damage" : 0.5,
+                                    "Aura Size" : 10, "Aura Strength" : 1, "Exp Multiplier": .25}
         
         self.upgradeBasicTypesMult = {"Defense" : 0.2, "Bullet Pierce" : 0.2, "Bullet Count" : 0.2, "Spread Angle" : 0.2, 
                                   "Attack Speed" : -0.05, "Bullet Speed" : 0.25, "Bullet Range" : 0.25, "Bullet Damage" : 0.2, 
-                                  "Bullet Size" : 0.2, "Player Speed" : 0.2, "Crit Chance" : 0.05, "Crit Damage" : 0.2, "Aura Size" : 0.2, "Aura Strength" : 0.2}
+                                  "Bullet Size" : 0.2, "Player Speed" : 0.2, "Crit Chance" : 0.05, "Crit Damage" : 0.2,
+                                   "Aura Size" : 0.2, "Aura Strength" : 0.2, "Exp Multiplier": 0.2}
         
         self.upgradeBasicTypesMapper = {"Defense" : "defense", "Bullet Pierce" : "bulletPierce", "Bullet Count" : "projectileCount", "Spread Angle" : "azimuthalProjectileAngle", 
                                   "Attack Speed" : "attackCooldownStat", "Bullet Speed" : "bulletSpeed", "Bullet Range" : "bulletRange", "Bullet Damage" : "damage", 
-                                  "Bullet Size" : "bulletSize", "Player Speed" : "playerSpeed", "Crit Chance" : "critChance", "Crit Damage" : "critDamage", "Aura Size" : "aura", "Aura Size" : "auraSpeed"}
+                                  "Bullet Size" : "bulletSize", "Player Speed" : "playerSpeed", "Crit Chance" : "critChance", "Crit Damage" : "critDamage",
+                                  "Aura Size" : "aura", "Aura Size" : "auraSpeed", "Exp Multiplier":"xpMult"}
         
         self.upgradeUniqueTypes = ["healFull"]
 
@@ -84,12 +90,15 @@ class LevelingHandler:
 
         cardY = (self.sH - cardHeight) / 2
 
+        self.rerollButton = pygame.Rect(self.sW // 2 - self.tileSize * 2, self.sH * 0.85, self.tileSize * 4, self.tileSize * 1.5)
         self.leftCard = pygame.Rect(self.tileSize * 2, cardY, cardWidth, cardHeight)
         self.midCard = pygame.Rect(self.tileSize * 3 + cardWidth, cardY, cardWidth, cardHeight)
         self.rightCard = pygame.Rect(self.tileSize * 4 + 2 * cardWidth, cardY, cardWidth, cardHeight)
 
 
     def drawCards(self, screen):
+        screen.fill((0,0,0))
+
         """Draw the three cards, keeping the original structure intact but making it resolution-adaptive."""
         for card, rarity, mathType, upgradeType in zip(
             [self.leftCard, self.midCard, self.rightCard],
@@ -123,32 +132,45 @@ class LevelingHandler:
             value_y = card.bottom - card.height * 0.05
 
             if mathType == "addative":
-                textRender = self.descFont.render(f"By {1}", True, self.baseColor)  # Placeholder value
+                textRender = self.descFont.render(f"By {self.upgradeBasicTypesAdd[upgradeType]}", True, self.baseColor)  # Placeholder value
             else:
-                textRender = self.descFont.render(f"By {1.2}x", True, self.baseColor)  # Placeholder multiplier
+                textRender = self.descFont.render(f"By {self.upgradeBasicTypesMult[upgradeType]}x", True, self.baseColor)  # Placeholder multiplier
 
             textRect = textRender.get_rect(center=(card.centerx, value_y))
             screen.blit(textRender, textRect)
+
+        # Draw the re-roll button
+        pygame.draw.rect(screen, pygame.Color(200, 0, 0), self.rerollButton, border_radius=10)  # Red button with rounded corners
+        textRender = self.titleFont.render("Re-roll", True, pygame.Color(255, 255, 255))
+        textRect = textRender.get_rect(center=self.rerollButton.center)
+        screen.blit(textRender, textRect)
+        # Display reroll count BELOW the button
+        reroll_text = self.descFont.render(f"Rerolls left: {self.rerolls}", True, pygame.Color(255, 255, 255))
+        reroll_text_rect = reroll_text.get_rect(center=(self.rerollButton.centerx, self.rerollButton.bottom + self.tileSize * 0.5))
+        screen.blit(reroll_text, reroll_text_rect)
 
     def PlayerClicked(self, mouseDown, mouseX, mouseY):
         if (not mouseDown):
             self.firstClick = False
 
         if (mouseDown and not self.firstClick):
-            if(mouseX < self.leftCard.right and mouseX > self.leftCard.left):
-                if(mouseY < self.leftCard.bottom and mouseY > self.leftCard.top):
+            if self.rerollButton.collidepoint(mouseX, mouseY):
+                if (self.rerolls > 0):
                     self.firstClick = True
-                    return "leftCard"
-            if(mouseX < self.midCard.right and mouseX > self.midCard.left):
-                if(mouseY < self.midCard.bottom and mouseY > self.midCard.top):
-                    self.firstClick = True
-                    return "midCard"
-            if(mouseX < self.rightCard.right and mouseX > self.rightCard.left):
-                if(mouseY < self.rightCard.bottom and mouseY > self.rightCard.top):
-                    self.firstClick = True
-                    return "rightCard"
-        else:
-            return "none"
+                    self.randomizeLevelUp()
+                    self.rerolls-=1
+                return "none"
+            
+            if(self.leftCard.collidepoint(mouseX,mouseY)):
+                self.firstClick = True
+                return "leftCard"
+            if(self.midCard.collidepoint(mouseX,mouseY)):
+                self.firstClick = True
+                return "midCard"
+            if(self.rightCard.collidepoint(mouseX,mouseY)):
+                self.firstClick = True
+                return "rightCard"
+        return "none"
         
     def randomizeLevelUp(self):
         
@@ -196,5 +218,7 @@ class LevelingHandler:
 
         self.randomizing = True
 
+        # self.drawCards(pygame.display.get_surface())  # Redraw the cards
+        # pygame.display.update()  # Update the display
 
 
